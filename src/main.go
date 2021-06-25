@@ -58,6 +58,18 @@ func loadConfig() (*EnvConfig, error) {
 	config.ItemUsageCursorFile = path.Join(splunkHome, config.ItemUsageCursorFile)
 	config.SignInCursorFile = path.Join(splunkHome, config.SignInCursorFile)
 
+	jwt, err := utils.ParseJWTClaims(config.AuthToken)
+	if err != nil {
+		return nil, err
+	}
+
+	url := jwt.GetEventsURL()
+	// The config url will be used if the token was generated before
+	// this update and does not contain a url
+	if url != "" {
+		config.Url = url
+	}
+
 	return &config, nil
 }
 

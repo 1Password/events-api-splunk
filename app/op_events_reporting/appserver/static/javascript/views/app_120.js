@@ -7,6 +7,7 @@
  */
 
 import * as Setup from "./setup_page.js";
+import { jwtDecode } from "./util.js";
 
 define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 	const e = react.createElement;
@@ -15,9 +16,9 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 	const authToken = "authToken";
 	const limit = "limit";
 	const startAt = "startAt";
-	const url = "url";
 	const signInCursorFile = "signInCursorFile";
 	const itemUsageCursorFile = "itemUsageCursorFile";
+	const error = "error";
 
 	class SetupPage extends react.Component {
 		constructor(props) {
@@ -25,7 +26,7 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 
 			this.state = {
 				[authToken]: "",
-				[url]: "https://events.1password.com",
+				[error]: "",
 			};
 
 			this.handleChange = this.handleChange.bind(this);
@@ -42,10 +43,18 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 		async handleSubmit(event) {
 			event.preventDefault();
 
+			try {
+				jwtDecode(this.state[authToken]);
+			} catch (err) {
+				return this.setState({
+					...this.state,
+					[error]: "Error parsing token.",
+				});
+			}
+
 			// Normalize inputs
 			const options = {
 				[authToken]: `"${this.state[authToken]}"`,
-				[url]: `"${this.state[url]}"`,
 				[limit]: 100,
 				[startAt]: "2020-01-01T00:00:00Z",
 				[signInCursorFile]:
@@ -71,18 +80,10 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 								onChange: this.handleChange,
 							}),
 						]),
-						e("label", null, [
-							e("div", null, ["Events API URL"]),
-							e("input", {
-								type: "text",
-								name: url,
-								value: this.state[url],
-								onChange: this.handleChange,
-							}),
-						]),
 						e("input", { type: "submit", value: "Submit" }),
 					]),
 				]),
+				this.state.error && e("div", null, this.state.error)
 			]);
 		}
 	}

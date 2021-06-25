@@ -19,4 +19,8 @@ function promisify(fn) {
 	};
 }
 
-export { promisify };
+function jwtDecode(token) {
+	return JSON.parse(atob(token.split(".")[1]))
+}
+
+export { promisify, jwtDecode };
