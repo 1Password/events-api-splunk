@@ -7,7 +7,6 @@
  */
 
 import * as Setup from "./setup_page.js";
-import { jwtDecode } from "./util.js";
 
 define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 	const e = react.createElement;
@@ -44,7 +43,7 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 			event.preventDefault();
 
 			try {
-				jwtDecode(this.state[authToken]);
+				this.validateJWT(this.state[authToken]);
 			} catch (err) {
 				return this.setState({
 					...this.state,
@@ -64,6 +63,17 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 			};
 
 			await Setup.perform(splunk_js_sdk, options);
+		}
+
+		// validateJWT verifies that the token has 3 parts -
+		// the header, payload, and signature
+		// validateJWT only attempts to parse the payload to catch potential issues
+		validateJWT(token) {
+			const tokenComponents = token.split(".");
+			if (tokenComponents.length !== 3) {
+				throw "Invalid JWT";
+			}
+			return JSON.parse(atob(tokenComponents[1]))
 		}
 
 		render() {

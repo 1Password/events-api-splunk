@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 
 	"gopkg.in/square/go-jose.v2/jwt"
@@ -9,6 +10,8 @@ import (
 type JWTClaims struct {
 	Audience []string `json:"aud"`
 }
+
+const AudienceDEPRECATED = "com.1password.streamingservice"
 
 func ParseJWTClaims(token string) (*JWTClaims, error) {
 	t, err := jwt.ParseSigned(token)
@@ -31,10 +34,10 @@ func ParseJWTClaims(token string) (*JWTClaims, error) {
 	return claims, nil
 }
 
-func (t *JWTClaims) GetEventsURL() string {
-	if t.Audience[0] == "com.1password.streamingservice" {
-		return ""
+func (t *JWTClaims) GetEventsURL() (string, error) {
+	if t.Audience[0] == AudienceDEPRECATED {
+		return "", errors.New("Token does not have a url.")
 	}
 
-	return fmt.Sprintf("https://%s", t.Audience[0])
+	return fmt.Sprintf("https://%s", t.Audience[0]), nil
 }
