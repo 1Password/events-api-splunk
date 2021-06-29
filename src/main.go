@@ -66,7 +66,7 @@ func loadConfig() (*EnvConfig, error) {
 	url, err := jwt.GetEventsURL()
 	// The config url will be used if the token was generated before
 	// this update and does not contain a url
-	if err != nil {
+	if err == nil {
 		config.Url = url
 	}
 
