@@ -18,6 +18,8 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 	const signInCursorFile = "signInCursorFile";
 	const itemUsageCursorFile = "itemUsageCursorFile";
 	const error = "error";
+	const aud = "aud";
+	const audienceDEPRECATED = "com.1password.streamingservice";
 
 	class SetupPage extends react.Component {
 		constructor(props) {
@@ -47,7 +49,7 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 			} catch (err) {
 				return this.setState({
 					...this.state,
-					[error]: "Error parsing token.",
+					[error]: err,
 				});
 			}
 
@@ -71,9 +73,15 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 		validateJWT(token) {
 			const tokenComponents = token.split(".");
 			if (tokenComponents.length !== 3) {
-				throw "Invalid JWT";
+				throw "Invalid JSON Web Token";
 			}
-			return JSON.parse(atob(tokenComponents[1]))
+			const payload = JSON.parse(atob(tokenComponents[1]))
+			if (!payload[aud] || payload[aud].length !== 1) {
+				throw "Invalid JSON Web Token";
+			}
+			if (payload[aud][0] === audienceDEPRECATED) {
+				throw "Please generate a new token";
+			}
 		}
 
 		render() {
