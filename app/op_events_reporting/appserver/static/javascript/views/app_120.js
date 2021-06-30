@@ -15,9 +15,11 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 	const authToken = "authToken";
 	const limit = "limit";
 	const startAt = "startAt";
-	const url = "url";
 	const signInCursorFile = "signInCursorFile";
 	const itemUsageCursorFile = "itemUsageCursorFile";
+	const error = "error";
+	const aud = "aud";
+	const audienceDEPRECATED = "com.1password.streamingservice";
 
 	class SetupPage extends react.Component {
 		constructor(props) {
@@ -25,7 +27,7 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 
 			this.state = {
 				[authToken]: "",
-				[url]: "https://events.1password.com",
+				[error]: "",
 			};
 
 			this.handleChange = this.handleChange.bind(this);
@@ -42,10 +44,18 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 		async handleSubmit(event) {
 			event.preventDefault();
 
+			try {
+				this.validateJWT(this.state[authToken]);
+			} catch (err) {
+				return this.setState({
+					...this.state,
+					[error]: err,
+				});
+			}
+
 			// Normalize inputs
 			const options = {
 				[authToken]: `"${this.state[authToken]}"`,
-				[url]: `"${this.state[url]}"`,
 				[limit]: 100,
 				[startAt]: "2020-01-01T00:00:00Z",
 				[signInCursorFile]:
@@ -55,6 +65,23 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 			};
 
 			await Setup.perform(splunk_js_sdk, options);
+		}
+
+		// validateJWT verifies that the token has 3 parts -
+		// the header, payload, and signature
+		// validateJWT only attempts to parse the payload to catch potential issues
+		validateJWT(token) {
+			const tokenComponents = token.split(".");
+			if (tokenComponents.length !== 3) {
+				throw "Invalid JSON Web Token";
+			}
+			const payload = JSON.parse(atob(tokenComponents[1]))
+			if (!payload[aud] || payload[aud].length !== 1) {
+				throw "Invalid JSON Web Token";
+			}
+			if (payload[aud][0] === audienceDEPRECATED) {
+				throw "Please generate a new token";
+			}
 		}
 
 		render() {
@@ -71,18 +98,10 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 								onChange: this.handleChange,
 							}),
 						]),
-						e("label", null, [
-							e("div", null, ["Events API URL"]),
-							e("input", {
-								type: "text",
-								name: url,
-								value: this.state[url],
-								onChange: this.handleChange,
-							}),
-						]),
 						e("input", { type: "submit", value: "Submit" }),
 					]),
 				]),
+				this.state.error && e("div", null, this.state.error)
 			]);
 		}
 	}
