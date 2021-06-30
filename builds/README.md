@@ -1,4 +1,4 @@
-# 1Password - Events Reporting Installation Steps
+# 1Password Events API for Splunk Installation Steps
 
 1. Download the 1Password Splunk zip file from the provided link and unzip it with the software of your choosing.
 2. Sign into your Splunk account, and click the gear icon next to the apps listing on the left-hand side of the home screen to navigate to App Management.

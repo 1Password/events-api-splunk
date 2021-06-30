@@ -1,4 +1,4 @@
-# Events API - Splunk
+# Events API for Splunk
 
 This is the Splunk add-on which is comprized of various splunk configuration files and go binaries, used to ingest 1Password events. This Add-on can be run locally in docker or built and installed on Splunk. For building the add-on, see the root README.md file.
 

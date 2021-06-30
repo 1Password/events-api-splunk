@@ -31,7 +31,7 @@ Click on the 1Password App again, this time you will be navigated to Search. Sta
 
 ## Debugging
 
-If you've gone through the installation steps and do not see any ingested events, take a look at the logs at `$SPLUNK_HOME/var/log/splunk/splunkd.log` to see if there are any actionable steps.
+If you've gone through the installation steps and do not see any ingested events, take a look at the logs at `splunkd.log` to see if there are any actionable steps.
 
 Common errors:
 
@@ -39,4 +39,4 @@ Common errors:
 ERROR ExecProcessor - message from "/opt/splunk/etc/apps/onepassword_events_api/bin/signin_attempts" panic: introspect request failed: could not unmarshal response: 404 page not found
 ```
 
-- There is something wrong with your JWT token. A common issue is not copying the entire token during the setup flow.
+- There is something wrong with your JWT. A common issue is not copying the entire token during the setup flow.
