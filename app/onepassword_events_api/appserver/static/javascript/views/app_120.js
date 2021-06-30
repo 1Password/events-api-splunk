@@ -59,9 +59,9 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 				[limit]: 100,
 				[startAt]: "2020-01-01T00:00:00Z",
 				[signInCursorFile]:
-					'"/etc/apps/op_events_reporting/local/signin_cursor_store"',
+					'"/etc/apps/onepassword_events_api/local/signin_cursor_store"',
 				[itemUsageCursorFile]:
-					'"/etc/apps/op_events_reporting/local/itemusage_cursor_store"',
+					'"/etc/apps/onepassword_events_api/local/itemusage_cursor_store"',
 			};
 
 			await Setup.perform(splunk_js_sdk, options);

@@ -38,7 +38,7 @@ func loadConfig() (*EnvConfig, error) {
 		return nil, fmt.Errorf("SPLUNK_HOME environment variable must be set")
 	}
 
-	configPath := splunkHome + "/etc/apps/op_events_reporting/local/events_reporting.conf"
+	configPath := splunkHome + "/etc/apps/onepassword_events_api/local/events_reporting.conf"
 	configFile, err := os.Open(configPath)
 	if err != nil {
 		return nil, fmt.Errorf("could not open config file: %w", err)

@@ -1,6 +1,6 @@
 "use strict";
 
-var app_name = "./op_events_reporting";
+var app_name = "./onepassword_events_api";
 
 require.config({
 	paths: {

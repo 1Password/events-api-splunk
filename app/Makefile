@@ -15,7 +15,7 @@ VERSION := `git describe --tags --dirty 2>/dev/null`
 COMMITHASH := `git rev-parse --short HEAD 2>/dev/null`
 DATE := `date "+%FT%T%z"`
 
-CONTAINER_NAME := 'op_events_reporting'
+CONTAINER_NAME := 'onepassword_events_api'
 
 .PHONY: all
 all: restart
@@ -56,11 +56,11 @@ refresh: remove start
 
 .PHONY: clean
 clean:
-	$(RM) -rf op_events_reporting/local
-	$(RM) op_events_reporting/metadata/local.meta
-	$(RM) op_events_reporting/bin/item_usages
-	$(RM) -rf op_events_reporting/lib/item_usages
-	$(RM) op_events_reporting/bin/signin_attempts
-	$(RM) -rf op_events_reporting/lib/signin_attempts
+	$(RM) -rf onepassword_events_api/local
+	$(RM) onepassword_events_api/metadata/local.meta
+	$(RM) onepassword_events_api/bin/item_usages
+	$(RM) -rf onepassword_events_api/lib/item_usages
+	$(RM) onepassword_events_api/bin/signin_attempts
+	$(RM) -rf onepassword_events_api/lib/signin_attempts
 	$(RM) splunkd.log
 	@touch splunkd.log

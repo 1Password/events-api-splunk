@@ -1,4 +1,4 @@
 splunkd.log
-op_events_reporting/local
-op_events_reporting/metadata/local.meta
-op_events_reporting/bin/*
+onepassword_events_api/local
+onepassword_events_api/metadata/local.meta
+onepassword_events_api/bin/*

@@ -1,13 +1,13 @@
 "use strict";
 
-import * as Splunk from "./splunk_helpers.js";
 import * as Config from "./setup_configuration.js";
+import * as Splunk from "./splunk_helpers.js";
 
 const CUSTOM_CONF = "events_reporting";
 const CUSTOM_CONF_STANZA = "config";
 
 export async function perform(splunk_js_sdk, setup_options) {
-	var app_name = "op_events_reporting";
+	var app_name = "onepassword_events_api";
 
 	var application_name_space = {
 		owner: "nobody",
