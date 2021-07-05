@@ -1,10 +1,10 @@
 "use strict";
 
-var app_name = "./op_events_reporting";
+var app_name = "./onepassword_events_api";
 
 require.config({
 	paths: {
-		myApp: "../app/" + app_name + "/javascript/views/app_120",
+		myApp: "../app/" + app_name + "/javascript/views/app_130",
 		react: "../app/" + app_name + "/javascript/vendor/react.production.min",
 		ReactDOM:
 			"../app/" +

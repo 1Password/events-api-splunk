@@ -1,4 +1,4 @@
-# Events API - Splunk
+# 1Password Events API for Splunk
 
 This is the source code to retrieve events from the 1Password Events API and is meant to be used with the 1Password Splunk app.
 

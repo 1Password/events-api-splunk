@@ -3,7 +3,7 @@ version: "3.6"
 services:
   splunk:
     image: "splunk/splunk:latest"
-    container_name: op_events_reporting
+    container_name: onepassword_events_api
     environment:
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
@@ -13,7 +13,7 @@ services:
       - 8088:8088
       - 8089:8089
     volumes:
-      - ${PWD}/op_events_reporting:/opt/splunk/etc/apps/op_events_reporting
+      - ${PWD}/onepassword_events_api:/opt/splunk/etc/apps/onepassword_events_api
       - ${PWD}/splunkd.log:/opt/splunk/var/log/splunk/splunkd.log
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000"]
