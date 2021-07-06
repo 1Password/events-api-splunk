@@ -27,7 +27,7 @@ The 1Password icon should be shown under the Applications pane on the left. That
 
 ## Development
 
-- When making changes to the `appserver` files, cURL `http://localhost:8000/en-US/_bump` to get the updated files.
+- When making changes to the `appserver` files, run `npm run build` and cURL `http://localhost:8000/en-US/_bump` to get the updated files.
 - When making changes to `.conf` files or dashboards, cURL `http://localhost:8000/en-US/debug/refresh` to get the updated files.
 - When updating the binaries found in `onepassword_events_api/bin/`, you must restart Splunk.
 
