@@ -20,6 +20,20 @@ const appjsVersion = {
     to: `"1Password Events API for Splunk Setup Page - Version ${package.version}"`
 };
 
+const tarballVersion = {
+    files: "../../Makefile",
+    from: /onepassword_events_api.*\.tar\.gz/,
+    to: `onepassword_events_api.${package.version}.tar.gz`
+}
+
+const userAgentVersion = {
+    files: "../../src/api/events.go",
+    from: /const DefaultUserAgent \= \"1Password Events API for Splunk \/ 1.3.0\"/,
+    to: `const DefaultUserAgent = "1Password Events API for Splunk / ${package.version}"`
+}
+
 replace(appConfVersion);
 replace(setupXMLHash);
 replace(appjsVersion);
+replace(tarballVersion);
+replace(userAgentVersion);

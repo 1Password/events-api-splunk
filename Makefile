@@ -24,7 +24,7 @@ build_all_apps: clean
 	@rm -f builds/bin/windows_amd64/onepassword_events_api/default/inputs.conf.bak
 	@cd builds/bin && for d in */; do \
 		cd $${d}; \
-		COPYFILE_DISABLE=1 tar --exclude='.DS_Store' --exclude='.gitignore' --exclude='.travis.yml' --exclude='.gitcookies.sh.enc' -cvzf onepassword_events_api.tar.gz onepassword_events_api; \
+		COPYFILE_DISABLE=1 tar --exclude='.DS_Store' --exclude='.gitignore' --exclude='.travis.yml' --exclude='.gitcookies.sh.enc' -cvzf onepassword_events_api.1.4.0.tar.gz onepassword_events_api; \
 		cd ..; \
 	done
 	@cd builds/bin && for d in */; do rm -rf $${d}onepassword_events_api; done
