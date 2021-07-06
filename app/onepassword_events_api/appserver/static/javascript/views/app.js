@@ -8,7 +8,6 @@
 
 import React from "react";
 import * as Setup from "./setup_page.js";
-import { version } from "../../../../package.json";
 
 // Since we don't have TS, I'm using constants to help with key label enforcement
 const authToken = "authToken";
@@ -87,7 +86,7 @@ export default class SetupPage extends React.Component {
 
 	render() {
 		return e("div", null, [
-			e("h2", null, `1Password Events API for Splunk Setup Page - Version ${version}`),
+			e("h2", null, "1Password Events API for Splunk Setup Page - Version 1.4.0"),
 			e("div", null, [
 				e("form", { onSubmit: this.handleSubmit }, [
 					e("label", null, [
