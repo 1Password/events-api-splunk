@@ -28,7 +28,7 @@ const tarballVersion = {
 
 const userAgentVersion = {
     files: "../../src/api/events.go",
-    from: /const DefaultUserAgent \= \"1Password Events API for Splunk \/ 1.3.0\"/,
+    from: /const DefaultUserAgent \= \"1Password Events API for Splunk \/ .*\"/,
     to: `const DefaultUserAgent = "1Password Events API for Splunk / ${package.version}"`
 }
 
