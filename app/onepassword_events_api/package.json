@@ -4,15 +4,15 @@
     "description": "This application includes a scripted input to ingest data into Splunk from the Events Reporting API. After completing setup you will be able to monitor and alert on important 1Password event data.",
     "main": "appserver/static/javascripts/setup_page.js",
     "directories": {
-        "lib": "lib"
+        "lib": "appserver/static"
     },
     "scripts": {
         "build": "npx webpack --mode=development --config webpack.config.js",
         "build-release": "npm version minor && npx webpack --mode=production --config webpack.config.js"
     },
     "keywords": [],
-    "author": "",
-    "license": "ISC",
+    "author": "1Password",
+    "license": "MIT",
     "devDependencies": {
         "webpack": "^5.42.1",
         "webpack-cli": "^4.7.2"
