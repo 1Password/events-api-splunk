@@ -20,6 +20,7 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 	const error = "error";
 	const aud = "aud";
 	const audienceDEPRECATED = "com.1password.streamingservice";
+	const success = "success";
 
 	class SetupPage extends react.Component {
 		constructor(props) {
@@ -28,6 +29,7 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 			this.state = {
 				[authToken]: "",
 				[error]: "",
+				[success]: false,
 			};
 
 			this.handleChange = this.handleChange.bind(this);
@@ -50,6 +52,7 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 				return this.setState({
 					...this.state,
 					[error]: err,
+					success: false,
 				});
 			}
 
@@ -65,6 +68,12 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 			};
 
 			await Setup.perform(splunk_js_sdk, options);
+
+			return this.setState({
+				...this.state,
+				[error]: "",
+				[success]: true,
+			});
 		}
 
 		// validateJWT verifies that the token has 3 parts -
@@ -101,7 +110,12 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 						e("input", { type: "submit", value: "Submit" }),
 					]),
 				]),
-				this.state.error && e("div", null, this.state.error)
+				this.state.error && e("div", { class: "error" }, this.state.error),
+				this.state.success && e("div", { class: "success" }, [
+					"Your token has been successfully updated. If this is the first time you're setting up 1Password Events API for Splunk, you'll have to enable the scripted inputs. If the 1Password Events API for Splunk had already been setup, you'll have to disable and re-enable the scripted inputs for the changes to take effect. ",
+					"For more information, check out the support article ",
+					e("a", { href: "https://support.1password.com/events-reporting-splunk" }, "here.")
+				]),
 			]);
 		}
 	}

@@ -37,9 +37,6 @@ export async function perform(splunk_js_sdk, setup_options) {
 		// Reloads the splunk app so that splunk is aware of the
 		// updates made to the file system
 		await Config.reload_splunk_app(splunk_js_sdk_service, app_name);
-
-		// Redirect to the Splunk App's home page
-		Config.redirect_to_splunk_app_homepage(app_name);
 	} catch (error) {
 		// This could be better error catching.
 		// Usually, error output that is ONLY relevant to the user
