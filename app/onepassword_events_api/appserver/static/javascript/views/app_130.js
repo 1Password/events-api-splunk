@@ -112,7 +112,7 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 				]),
 				this.state.error && e("div", { class: "error" }, this.state.error),
 				this.state.success && e("div", { class: "success" }, [
-					"Your token has been successfully updated. If this is the first time you're setting up 1Password Events API for Splunk, you'll have to enable the scripted inputs. If the 1Password Events API for Splunk had already been setup, you'll have to disable and re-enable the scripted inputs for the changes to take effect. ",
+					"Your token has been successfully updated. If this is the first time you're setting up 1Password Events API for Splunk, you'll have to enable the scripted inputs. If 1Password Events API for Splunk had already been setup, you'll have to disable and re-enable the scripted inputs for the changes to take effect. ",
 					"For more information, check out the support article ",
 					e("a", { href: "https://support.1password.com/events-reporting-splunk" }, "here.")
 				]),
