@@ -18,6 +18,7 @@ const itemUsageCursorFile = "itemUsageCursorFile";
 const error = "error";
 const aud = "aud";
 const audienceDEPRECATED = "com.1password.streamingservice";
+const success = "success";
 
 const e = React.createElement;
 
@@ -28,6 +29,7 @@ export default class SetupPage extends React.Component {
 		this.state = {
 			[authToken]: "",
 			[error]: "",
+			[success]: false,
 		};
 
 		this.handleChange = this.handleChange.bind(this);
@@ -65,6 +67,12 @@ export default class SetupPage extends React.Component {
 		};
 
 		await Setup.perform(splunkjs, options);
+
+		return this.setState({
+			...this.state,
+			[error]: "",
+			[success]: true,
+		});
 	}
 
 	// validateJWT verifies that the token has 3 parts -
@@ -75,7 +83,7 @@ export default class SetupPage extends React.Component {
 		if (tokenComponents.length !== 3) {
 			throw "Invalid JSON Web Token";
 		}
-		const payload = JSON.parse(atob(tokenComponents[1]))
+		const payload = JSON.parse(atob(tokenComponents[1]));
 		if (!payload[aud] || payload[aud].length !== 1) {
 			throw "Invalid JSON Web Token";
 		}
@@ -86,7 +94,11 @@ export default class SetupPage extends React.Component {
 
 	render() {
 		return e("div", null, [
-			e("h2", null, "1Password Events API for Splunk Setup Page - Version 1.4.0"),
+			e(
+				"h2",
+				null,
+				"1Password Events API for Splunk Setup Page - Version 1.4.0",
+			),
 			e("div", null, [
 				e("form", { onSubmit: this.handleSubmit }, [
 					e("label", null, [
@@ -101,7 +113,21 @@ export default class SetupPage extends React.Component {
 					e("input", { type: "submit", value: "Submit" }),
 				]),
 			]),
-			this.state.error && e("div", null, this.state.error)
+			this.state.error && e("div", { class: "error" }, this.state.error),
+			this.state.success &&
+				e("div", { class: "success" }, [
+					"Your token has been successfully updated. If this is the first time you're setting up 1Password Events API for Splunk, you'll have to enable the scripted inputs. If 1Password Events API for Splunk has already been setup, you'll have to disable and re-enable the scripted inputs for the changes to take effect.",
+					e("br"),
+					e("br"),
+					"For more information, check out the support article ",
+					e(
+						"a",
+						{
+							href: "https://support.1password.com/events-reporting-splunk",
+						},
+						"here.",
+					),
+				]),
 		]);
 	}
 }
