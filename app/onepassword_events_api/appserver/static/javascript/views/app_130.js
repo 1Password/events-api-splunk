@@ -84,7 +84,7 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 			if (tokenComponents.length !== 3) {
 				throw "Invalid JSON Web Token";
 			}
-			const payload = JSON.parse(atob(tokenComponents[1]))
+			const payload = JSON.parse(atob(tokenComponents[1]));
 			if (!payload[aud] || payload[aud].length !== 1) {
 				throw "Invalid JSON Web Token";
 			}
@@ -95,7 +95,11 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 
 		render() {
 			return e("div", null, [
-				e("h2", null, "1Password Events API for Splunk Setup Page - Version 1.3.0"),
+				e(
+					"h2",
+					null,
+					"1Password Events API for Splunk Setup Page - Version 1.3.0",
+				),
 				e("div", null, [
 					e("form", { onSubmit: this.handleSubmit }, [
 						e("label", null, [
@@ -111,11 +115,20 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
 					]),
 				]),
 				this.state.error && e("div", { class: "error" }, this.state.error),
-				this.state.success && e("div", { class: "success" }, [
-					"Your token has been successfully updated. If this is the first time you're setting up 1Password Events API for Splunk, you'll have to enable the scripted inputs. If 1Password Events API for Splunk had already been setup, you'll have to disable and re-enable the scripted inputs for the changes to take effect. ",
-					"For more information, check out the support article ",
-					e("a", { href: "https://support.1password.com/events-reporting-splunk" }, "here.")
-				]),
+				this.state.success &&
+					e("div", { class: "success" }, [
+						"Your token has been successfully updated. If this is the first time you're setting up 1Password Events API for Splunk, you'll have to enable the scripted inputs. If 1Password Events API for Splunk has already been setup, you'll have to disable and re-enable the scripted inputs for the changes to take effect.",
+						e("br"),
+						e("br"),
+						"For more information, check out the support article ",
+						e(
+							"a",
+							{
+								href: "https://support.1password.com/events-reporting-splunk",
+							},
+							"here.",
+						),
+					]),
 			]);
 		}
 	}
