@@ -20,14 +20,11 @@ the scripted inputs (included in `onepassword_events_api/bin/`) will be triggere
 
 ## Setup
 
-Click on the 1Password Application in the Apps navigation pane and follow the setup instructions, making sure the input is valid (there is currently no validation on this page). Some possible mistakes might be:
+Click on the 1Password Application in the Apps navigation pane and follow the setup instructions. Once complete, you will need to enable the scripted inputs that your JWT supports.
 
-1. Incorrect token
-2. Incorrect Events API URL
+Please note that this add-on will log to the default index. If you wish to change that behavior you may want to create new 1Password specific indexes. See more detailed instructions on our [support page](https://support.1password.com/cs/events-reporting-splunk/#step-3-set-up-the-1password-events-api-add-on).
 
-Restart Splunk by choosing Settings -> Server Controls -> Restart Splunk
-
-Click on the 1Password App again, this time you will be navigated to Search. Start seeing what data has already been ingested by filtering by the sign in attempts source type, ie `sourcetype="1password:insights:signin_attempts"`. If you don't see any events, try increasing the length of time to "All time".
+Click on the 1Password App again, this time you will be navigated to Search. Start seeing what data has already been ingested by filtering by the event source type, such as `sourcetype="1password:insights:signin_attempts"` or `sourcetype="1password:insights:item_usages"`. If you don't see any events, try increasing the length of time to "All time".
 
 ## Debugging
 
