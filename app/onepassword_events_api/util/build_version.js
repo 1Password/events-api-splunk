@@ -26,21 +26,7 @@ const appjsVersion = {
     to: `"1Password Events API for Splunk Setup Page - Version ${package.version}"`
 };
 
-const tarballVersion = {
-    files: "../../Makefile",
-    from: /VERSION=.*/,
-    to: `VERSION=${package.version}`
-}
-
-const userAgentVersion = {
-    files: "../../src/api/events.go",
-    from: /const DefaultUserAgent \= \"1Password Events API for Splunk \/ .*\"/,
-    to: `const DefaultUserAgent = "1Password Events API for Splunk / ${package.version}"`
-}
-
 replace(appConfVersion);
 replace(appConfBuild);
 replace(setupXMLHash);
 replace(appjsVersion);
-replace(tarballVersion);
-replace(userAgentVersion);
