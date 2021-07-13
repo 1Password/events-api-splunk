@@ -7,8 +7,8 @@
         "lib": "appserver/static"
     },
     "scripts": {
-        "build": "npx webpack --mode=development --config webpack.config.js && node util/build_version.js",
-        "build-release": "npm version minor && npx webpack --mode=production --config webpack.config.js && node util/build_version.js"
+        "build": "rm -rf appserver/static/build && mkdir appserver/static/build && npx webpack --mode=development --config webpack.config.js && node util/build_version.js",
+        "build-release": "rm -rf appserver/static/build && mkdir appserver/static/build && npx webpack --mode=production --config webpack.config.js && node util/build_version.js"
     },
     "keywords": [],
     "author": "1Password",

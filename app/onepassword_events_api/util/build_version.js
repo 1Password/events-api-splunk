@@ -8,6 +8,12 @@ const appConfVersion = {
     to: `version = ${package.version}`,
 };
 
+const appConfBuild = {
+    files: "./default/app.conf",
+    from: /build \= .*/,
+    to: `build = ${package.version.replace(/\./g, "")}`
+}
+
 const setupXMLHash = {
     files: "./default/data/ui/views/setup_page_dashboard.xml",
     from: /script\=\"build\/.*\.js\"/,
@@ -22,8 +28,8 @@ const appjsVersion = {
 
 const tarballVersion = {
     files: "../../Makefile",
-    from: /onepassword_events_api.*\.tar\.gz/,
-    to: `onepassword_events_api.${package.version}.tar.gz`
+    from: /VERSION=.*/,
+    to: `VERSION=${package.version}`
 }
 
 const userAgentVersion = {
@@ -33,6 +39,7 @@ const userAgentVersion = {
 }
 
 replace(appConfVersion);
+replace(appConfBuild);
 replace(setupXMLHash);
 replace(appjsVersion);
 replace(tarballVersion);

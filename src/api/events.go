@@ -18,10 +18,12 @@ type EventsAPI struct {
 }
 
 const DefaultClientTimeout = 15 * time.Second
-const DefaultUserAgent = "1Password Events API for Splunk / 1.4.0"
+
+var Version string
+var DefaultUserAgent = fmt.Sprintf("1Password Events API for Splunk / %s", Version)
 
 func NewEventsAPI(authToken string, url string) *EventsAPI {
-	log.Println("New Events API")
+	log.Println("New Events API Version:", Version)
 	c := &http.Client{
 		Timeout: DefaultClientTimeout,
 	}
