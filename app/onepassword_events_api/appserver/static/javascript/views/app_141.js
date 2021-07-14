@@ -46,12 +46,11 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
     async handleSubmit(event) {
       event.preventDefault();
 
-      try {
-        this.validateJWT(this.state[authToken]);
-      } catch (err) {
+      const jwtError = this.validateJWT(this.state[authToken]);
+      if (typeof jwtError !== "undefined") {
         return this.setState({
           ...this.state,
-          [error]: err,
+          [error]: jwtError,
           success: false,
         });
       }
@@ -82,14 +81,19 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
     validateJWT(token) {
       const tokenComponents = token.split(".");
       if (tokenComponents.length !== 3) {
-        throw "Invalid JSON Web Token";
+        return "Invalid JSON Web Token - too short";
       }
-      const payload = JSON.parse(atob(tokenComponents[1]));
+      let payload;
+      try {
+        payload = JSON.parse(atob(tokenComponents[1]));
+      } catch (error) {
+        return "Invalid JSON Web Token - " + error.message;
+      }
       if (!payload[aud] || payload[aud].length !== 1) {
-        throw "Invalid JSON Web Token";
+        return "Invalid JSON Web Token - missing aud";
       }
       if (payload[aud][0] === audienceDEPRECATED) {
-        throw "Please generate a new token";
+        return "Please generate a new token";
       }
     }
 
@@ -98,7 +102,7 @@ define(["react", "splunkjs/splunk"], function (react, splunk_js_sdk) {
         e(
           "h2",
           null,
-          "1Password Events API for Splunk Setup Page - Version 1.4.0"
+          "1Password Events API for Splunk Setup Page - Version 1.4.1"
         ),
         e("div", null, [
           e("form", { onSubmit: this.handleSubmit }, [
