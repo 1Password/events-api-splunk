@@ -85,9 +85,9 @@ func main() {
 
 	eventsAPI := events.NewEventsAPI(env.AuthToken, env.Url)
 
-	if jwt.HaveSignInAttemptsFeature() && EventBuildType == utils.SignInAttemptsFeatureScope {
+	if jwt.Features.Contains(utils.SignInAttemptsFeatureScope) && EventBuildType == utils.SignInAttemptsFeatureScope {
 		actions.StartSignIns(env.SignInCursorFile, env.Limit, &env.StartAt, eventsAPI)
-	} else if jwt.HaveItemUsageFeature() && EventBuildType == utils.ItemUsageFeatureScope {
+	} else if jwt.Features.Contains(utils.ItemUsageFeatureScope) && EventBuildType == utils.ItemUsageFeatureScope {
 		actions.StartItemUsages(env.ItemUsageCursorFile, env.Limit, &env.StartAt, eventsAPI)
 	}
 }
