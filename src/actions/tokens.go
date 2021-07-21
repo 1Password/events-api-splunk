@@ -16,6 +16,10 @@ func GetEventsToken(ctx context.Context, splunkAPI *splunk.SplunkAPI) (string, e
 		err := fmt.Errorf("call to splunk failed: %w", err)
 		return "", err
 	}
+	if len(splunkRes.Entry.Content.Dict.Key) == 0 {
+		err := fmt.Errorf("splunk response is missing credentials")
+		return "", err
+	}
 
 	return splunkRes.Entry.Content.Dict.Key[0].Text, nil
 }
