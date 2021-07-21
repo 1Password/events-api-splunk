@@ -92,17 +92,17 @@ func (s *SplunkAPI) Passwords(ctx context.Context, passwordRealm, passwordKey st
 		err := fmt.Errorf("could not make SplunkAPIRequest: %w", err)
 		return nil, err
 	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		err := fmt.Errorf("received a non 200 response: %d", res.StatusCode)
+		return nil, err
+	}
 
 	passwordsResponse := &PasswordsResponse{}
 	decoder := xml.NewDecoder(res.Body)
 	err = decoder.Decode(passwordsResponse)
 	if err != nil {
 		err := fmt.Errorf("could not decode response")
-		return nil, err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		err := fmt.Errorf("received a non 200 response: %d", res.StatusCode)
 		return nil, err
 	}
 

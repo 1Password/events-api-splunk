@@ -19,7 +19,6 @@ type SplunkAPI struct {
 }
 
 const DefaultClientTimeout = 15 * time.Second
-const DefaultUserAgent = "1Password Insights / 1.5.0"
 
 func NewSplunkAPI(sessionKey string) *SplunkAPI {
 	log.Println("New Splunk API")
