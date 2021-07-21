@@ -14,10 +14,16 @@ const appConfBuild = {
     to: `build = ${package.version.replace(/\./g, "")}`
 }
 
-const setupXMLHash = {
+const setupXMLJSHash = {
     files: "./default/data/ui/views/setup_page_dashboard.xml",
     from: /script\=\"build\/.*\.js\"/,
     to: `script="build/${manifest["main.js"]}"`,
+};
+
+const setupXMLCSSHash = {
+    files: "./default/data/ui/views/setup_page_dashboard.xml",
+    from: /stylesheet\=\"build\/.*\.css\"/,
+    to: `stylesheet="build/${manifest["main.css"]}"`,
 };
 
 const appjsVersion = {
@@ -28,5 +34,6 @@ const appjsVersion = {
 
 replace(appConfVersion);
 replace(appConfBuild);
-replace(setupXMLHash);
+replace(setupXMLJSHash);
+replace(setupXMLCSSHash);
 replace(appjsVersion);
