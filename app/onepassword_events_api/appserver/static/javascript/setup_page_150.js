@@ -4,7 +4,7 @@ var app_name = "./onepassword_events_api";
 
 require.config({
   paths: {
-    myApp: "../app/" + app_name + "/javascript/views/app_141",
+    myApp: "../app/" + app_name + "/javascript/views/app_150",
     react: "../app/" + app_name + "/javascript/vendor/react.production.min",
     ReactDOM:
       "../app/" + app_name + "/javascript/vendor/react-dom.production.min",

@@ -1,8 +1,9 @@
-package api
+package splunk
 
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,29 +12,36 @@ import (
 	"time"
 )
 
-type EventsAPI struct {
+type SplunkAPI struct {
 	client    *http.Client
-	AuthToken string
+	SessionKey string
 	BaseUrl   string
 }
 
 const DefaultClientTimeout = 15 * time.Second
-const DefaultUserAgent = "1Password Events API for Splunk / 1.5.0"
+const DefaultUserAgent = "1Password Insights / 1.5.0"
 
-func NewEventsAPI(authToken string, url string) *EventsAPI {
-	log.Println("New Events API")
+func NewSplunkAPI(sessionKey string) *SplunkAPI {
+	log.Println("New Splunk API")
+
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
 	c := &http.Client{
 		Timeout: DefaultClientTimeout,
+		Transport: transport,
 	}
-	client := &EventsAPI{
+	
+	client := &SplunkAPI{
 		client:    c,
-		AuthToken: authToken,
-		BaseUrl:   url,
+		SessionKey: sessionKey,
+		BaseUrl: "https://localhost:8089", // Probably shouldn't hard code
 	}
 	return client
 }
 
-func (e *EventsAPI) request(ctx context.Context, method string, route string, body interface{}) (*http.Response, error) {
+func (e *SplunkAPI) request(ctx context.Context, method string, route string, body interface{}) (*http.Response, error) {
 	var b io.Reader
 	if body != nil {
 		reqBody, err := json.Marshal(body)
@@ -48,20 +56,12 @@ func (e *EventsAPI) request(ctx context.Context, method string, route string, bo
 		err := fmt.Errorf("could not create new request: %w", err)
 		return nil, err
 	}
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", e.AuthToken))
-	req.Header.Add("User-Agent", DefaultUserAgent)
+	req.Header.Add("Authorization", fmt.Sprintf("Splunk %s", e.SessionKey))
+	req.Header.Add("Content-Type", "application/json")
 	res, err := e.client.Do(req)
 	if err != nil {
 		err := fmt.Errorf("could not make request: %w", err)
 		return nil, err
 	}
 	return res, nil
-}
-
-type CursorRequest struct {
-	Cursor string `json:"cursor"`
-}
-type CursorResetRequest struct {
-	Limit     int        `json:"limit"`
-	StartTime *time.Time `json:"start_time,omitempty"`
 }

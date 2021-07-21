@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"log"
@@ -12,6 +13,7 @@ import (
 	"github.com/dimchansky/utfbom"
 	"go.1password.io/eventsapi-splunk/actions"
 	events "go.1password.io/eventsapi-splunk/api"
+	"go.1password.io/eventsapi-splunk/splunk"
 	"go.1password.io/eventsapi-splunk/utils"
 )
 
@@ -20,8 +22,6 @@ const SignInAttemptsFeatureScope = "signinattempts"
 
 var EventBuildType string // Injected at build time so we can make multiple apps
 type EnvConfig struct {
-	Url                 string
-	AuthToken           string
 	StartAt             time.Time
 	Limit               int
 	SignInCursorFile    string
@@ -46,7 +46,6 @@ func loadConfig() (*EnvConfig, error) {
 	defer configFile.Close()
 
 	br := utfbom.SkipOnly(configFile)
-
 	type LocalConfig struct {
 		Config EnvConfig
 	}
@@ -58,23 +57,15 @@ func loadConfig() (*EnvConfig, error) {
 	config.ItemUsageCursorFile = path.Join(splunkHome, config.ItemUsageCursorFile)
 	config.SignInCursorFile = path.Join(splunkHome, config.SignInCursorFile)
 
-	jwt, err := utils.ParseJWTClaims(config.AuthToken)
-	if err != nil {
-		return nil, err
-	}
-
-	url, err := jwt.GetEventsURL()
-	// The config url will be used if the token was generated before
-	// this update and does not contain a url
-	if err == nil {
-		config.Url = url
-	}
-
 	return &config, nil
 }
 
 func main() {
 	log.Println("Booting...")
+	if EventBuildType == "" {
+		err := fmt.Errorf("missing EventBuildType flag")
+		panic(err)
+	}
 
 	env, err := loadConfig()
 	if err != nil {
@@ -82,21 +73,42 @@ func main() {
 		panic(err)
 	}
 
-	if EventBuildType == "" {
-		err := fmt.Errorf("missing EventBuildType flag")
+	reader := bufio.NewReader(os.Stdin)
+	splunkSession, _, err := reader.ReadLine()
+	if err != nil {
+		err := fmt.Errorf("could not read session: %w", err)
 		panic(err)
 	}
 
-	eventsAPI := events.NewEventsAPI(env.AuthToken, env.Url)
-	res, err := eventsAPI.Introspect(context.TODO())
+	splunkAPI := splunk.NewSplunkAPI(string(splunkSession))
+	eventsToken, err := actions.GetEventsToken(context.TODO(), splunkAPI)
+	if err != nil {
+		err := fmt.Errorf("could not get token: %w", err)
+		panic(err)
+	}
+	
+	jwt, err := utils.ParseJWTClaims(eventsToken)
+	if err != nil {
+		err := fmt.Errorf("could not parse jwt: %w", err)
+		panic(err)
+	}
+
+	url, err := jwt.GetEventsURL()
+	if err != nil {
+		err := fmt.Errorf("could not get url from token: %w", err)
+		panic(err)
+	}
+
+	eventsAPI := events.NewEventsAPI(eventsToken, url)
+	eventsRes, err := eventsAPI.Introspect(context.TODO())
 	if err != nil {
 		err := fmt.Errorf("introspect request failed: %w", err)
 		panic(err)
 	}
 
-	if utils.ContainsString(SignInAttemptsFeatureScope, res.Features) && EventBuildType == SignInAttemptsFeatureScope {
+	if utils.ContainsString(SignInAttemptsFeatureScope, eventsRes.Features) && EventBuildType == SignInAttemptsFeatureScope {
 		actions.StartSignIns(env.SignInCursorFile, env.Limit, &env.StartAt, eventsAPI)
-	} else if utils.ContainsString(ItemUsageFeatureScope, res.Features) && EventBuildType == ItemUsageFeatureScope {
+	} else if utils.ContainsString(ItemUsageFeatureScope, eventsRes.Features) && EventBuildType == ItemUsageFeatureScope {
 		actions.StartItemUsages(env.ItemUsageCursorFile, env.Limit, &env.StartAt, eventsAPI)
 	}
 }
