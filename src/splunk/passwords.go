@@ -102,7 +102,7 @@ func (s *SplunkAPI) Passwords(ctx context.Context, passwordRealm, passwordKey st
 	decoder := xml.NewDecoder(res.Body)
 	err = decoder.Decode(passwordsResponse)
 	if err != nil {
-		err := fmt.Errorf("could not decode response")
+		err := fmt.Errorf("could not decode response: %w", err)
 		return nil, err
 	}
 
