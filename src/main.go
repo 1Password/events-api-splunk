@@ -1,17 +1,17 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"log"
 	"os"
 	"path"
-	"time"
 
-	"github.com/BurntSushi/toml"
-	"github.com/dimchansky/utfbom"
 	"go.1password.io/eventsapi-splunk/actions"
 	events "go.1password.io/eventsapi-splunk/api"
+	"go.1password.io/eventsapi-splunk/config"
+	"go.1password.io/eventsapi-splunk/splunk"
 	"go.1password.io/eventsapi-splunk/utils"
 )
 
@@ -19,84 +19,82 @@ const ItemUsageFeatureScope = "itemusages"
 const SignInAttemptsFeatureScope = "signinattempts"
 
 var EventBuildType string // Injected at build time so we can make multiple apps
-type EnvConfig struct {
-	Url                 string
-	AuthToken           string
-	StartAt             time.Time
-	Limit               int
-	SignInCursorFile    string
-	ItemUsageCursorFile string
-}
 
-// Gets environment variables and normalizes values to EnvConfig.
-// Note that the toml parsing library does not support BOM characters.
-// LoadConfig must trim a BOM prefix before passing the config bytes to the parser.
-func loadConfig() (*EnvConfig, error) {
-	log.Println("Loading config")
+func main() {
+	log.Println("Booting...")
+	if EventBuildType == "" {
+		err := fmt.Errorf("missing EventBuildType flag")
+		panic(err)
+	}
+
 	splunkHome := os.Getenv("SPLUNK_HOME")
 	if splunkHome == "" {
-		return nil, fmt.Errorf("SPLUNK_HOME environment variable must be set")
+		err := fmt.Errorf("SPLUNK_HOME environment variable must be set")
+		panic(err)
 	}
 
-	configPath := splunkHome + "/etc/apps/onepassword_events_api/local/events_reporting.conf"
-	configFile, err := os.Open(configPath)
+	splunkEnv, err := config.NewSplunkEnv(splunkHome)
 	if err != nil {
-		return nil, fmt.Errorf("could not open config file: %w", err)
+		err := fmt.Errorf("could create new splunk env: %w", err)
+		panic(err)
 	}
-	defer configFile.Close()
 
-	br := utfbom.SkipOnly(configFile)
-
-	type LocalConfig struct {
-		Config EnvConfig
-	}
-	var lc LocalConfig
-	if _, err := toml.DecodeReader(br, &lc); err != nil {
-		return nil, fmt.Errorf("could not decode toml config file: %w", err)
-	}
-	config := lc.Config
-	config.ItemUsageCursorFile = path.Join(splunkHome, config.ItemUsageCursorFile)
-	config.SignInCursorFile = path.Join(splunkHome, config.SignInCursorFile)
-
-	jwt, err := utils.ParseJWTClaims(config.AuthToken)
+	reader := bufio.NewReader(os.Stdin)
+	splunkSession, _, err := reader.ReadLine()
 	if err != nil {
-		return nil, err
+		err := fmt.Errorf("could not read session: %w", err)
+		panic(err)
+	}
+
+	splunkAPI := splunk.NewSplunkAPI(string(splunkSession))
+
+	// Versions less than 1.5.0 of the Events API stored the token on disk
+	// If we find it, move it to the splunk storage/passwords service
+	if splunkEnv.Config.AuthToken != "" {
+		err := actions.CreateEventsToken(context.TODO(), splunkAPI, splunkEnv.Config.AuthToken)
+		if err != nil {
+			err := fmt.Errorf("could not backup token: %w", err)
+			panic(err)
+		}
+		splunkEnv.Config.AuthToken = "" // Remove token on disk
+		err = splunkEnv.UpdateConfig(splunkEnv.Config)
+		if err != nil {
+			err := fmt.Errorf("could clean auth token: %w", err)
+			panic(err)
+		}
+	}
+
+	eventsToken, err := actions.GetEventsToken(context.TODO(), splunkAPI)
+	if err != nil {
+		err := fmt.Errorf("could not get token: %w", err)
+		panic(err)
+	}
+	
+	jwt, err := utils.ParseJWTClaims(eventsToken)
+	if err != nil {
+		err := fmt.Errorf("could not parse jwt: %w", err)
+		panic(err)
 	}
 
 	url, err := jwt.GetEventsURL()
 	// The config url will be used if the token was generated before
 	// this update and does not contain a url
 	if err == nil {
-		config.Url = url
+		splunkEnv.Config.Url = url
 	}
 
-	return &config, nil
-}
-
-func main() {
-	log.Println("Booting...")
-
-	env, err := loadConfig()
-	if err != nil {
-		err := fmt.Errorf("could not start: %w", err)
-		panic(err)
-	}
-
-	if EventBuildType == "" {
-		err := fmt.Errorf("missing EventBuildType flag")
-		panic(err)
-	}
-
-	eventsAPI := events.NewEventsAPI(env.AuthToken, env.Url)
-	res, err := eventsAPI.Introspect(context.TODO())
+	eventsAPI := events.NewEventsAPI(eventsToken, url)
+	eventsRes, err := eventsAPI.Introspect(context.TODO())
 	if err != nil {
 		err := fmt.Errorf("introspect request failed: %w", err)
 		panic(err)
 	}
 
-	if utils.ContainsString(SignInAttemptsFeatureScope, res.Features) && EventBuildType == SignInAttemptsFeatureScope {
-		actions.StartSignIns(env.SignInCursorFile, env.Limit, &env.StartAt, eventsAPI)
-	} else if utils.ContainsString(ItemUsageFeatureScope, res.Features) && EventBuildType == ItemUsageFeatureScope {
-		actions.StartItemUsages(env.ItemUsageCursorFile, env.Limit, &env.StartAt, eventsAPI)
+	if utils.ContainsString(SignInAttemptsFeatureScope, eventsRes.Features) && EventBuildType == SignInAttemptsFeatureScope {
+		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.SignInCursorFile)
+		actions.StartSignIns(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
+	} else if utils.ContainsString(ItemUsageFeatureScope, eventsRes.Features) && EventBuildType == ItemUsageFeatureScope {
+		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.ItemUsageCursorFile)
+		actions.StartItemUsages(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
 	}
 }

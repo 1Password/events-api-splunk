@@ -9,71 +9,74 @@
 import React from "react";
 import * as Setup from "./setup_page.js";
 
-// Since we don't have TS, I'm using constants to help with key label enforcement
-const authToken = "authToken";
-const limit = "limit";
-const startAt = "startAt";
-const signInCursorFile = "signInCursorFile";
-const itemUsageCursorFile = "itemUsageCursorFile";
-const error = "error";
-const aud = "aud";
 const audienceDEPRECATED = "com.1password.streamingservice";
-const success = "success";
-
 const e = React.createElement;
-
 export default class SetupPage extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      [authToken]: "",
-      [error]: "",
-      [success]: false,
+      authToken: "",
+      error: "",
+      success: false,
+      apps: [],
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
+  async componentDidMount() {
+    let appList = [];
+    try {
+      appList = await Setup.get_apps(splunkjs);
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        error: "Something went wrong - please refresh before continuing.",
+      });
+      return;
+    }
     this.setState({
-      ...this.state,
-      [event.target.name]: event.target.value,
+      apps: appList,
     });
   }
 
-  async handleSubmit(event) {
+  handleSubmit = async (event) => {
     event.preventDefault();
 
-    const jwtError = this.validateJWT(this.state[authToken]);
-    if (typeof jwtError !== "undefined") {
-      return this.setState({
-        ...this.state,
-        [error]: jwtError,
+    const errorMessage = this.validateJWT(this.state.authToken);
+    if (typeof errorMessage !== "undefined") {
+      this.setState({
+        error: errorMessage,
         success: false,
       });
+      return;
     }
 
-    // Normalize inputs
     const options = {
-      [authToken]: `"${this.state[authToken]}"`,
-      [limit]: 100,
-      [startAt]: "2020-01-01T00:00:00Z",
-      [signInCursorFile]:
+      limit: 100,
+      startAt: "2020-01-01T00:00:00Z",
+      signInCursorFile:
         '"/etc/apps/onepassword_events_api/local/signin_cursor_store"',
-      [itemUsageCursorFile]:
+      itemUsageCursorFile:
         '"/etc/apps/onepassword_events_api/local/itemusage_cursor_store"',
     };
 
-    await Setup.perform(splunkjs, options);
+    try {
+      await Setup.perform(splunkjs, this.state.authToken, options);
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        error:
+          "Something went wrong while storing your token - please try again.",
+        success: false,
+      });
+      return;
+    }
 
-    return this.setState({
-      ...this.state,
-      [error]: "",
-      [success]: true,
+    this.setState({
+      error: "",
+      success: true,
     });
-  }
+  };
 
   // validateJWT verifies that the token has 3 parts -
   // the header, payload, and signature
@@ -89,10 +92,10 @@ export default class SetupPage extends React.Component {
     } catch (error) {
       return "Invalid JSON Web Token - " + error.message;
     }
-    if (!payload[aud] || payload[aud].length !== 1) {
+    if (!payload.aud || payload.aud.length !== 1) {
       return "Invalid JSON Web Token - missing aud";
     }
-    if (payload[aud][0] === audienceDEPRECATED) {
+    if (payload.aud[0] === audienceDEPRECATED) {
       return "Please generate a new token";
     }
   }
@@ -100,27 +103,39 @@ export default class SetupPage extends React.Component {
   render() {
     return e("div", null, [
       e(
-        "h2",
+        "h1",
         null,
         "1Password Events API for Splunk Setup Page - Version 1.4.2"
       ),
+      this.state.apps.length > 0 &&
+        e("div", null, [
+          e("div", { className: "warning" }, [
+            e("h3", null, [
+              "WARNING: Any installed app could gain access to your token. Before saving it below, make sure you know and trust the following applications:",
+            ]),
+            e("div", null, this.state.apps.join(", ")),
+          ]),
+        ]),
       e("div", null, [
         e("form", { onSubmit: this.handleSubmit }, [
           e("label", null, [
-            e("div", null, ["Events API Token"]),
+            e("h3", null, ["Events API Token"]),
             e("input", {
               type: "text",
-              name: authToken,
-              value: this.state[authToken],
-              onChange: this.handleChange,
+              value: this.state.authToken,
+              onChange: (e) => {
+                this.setState({
+                  authToken: e.target.value,
+                });
+              },
             }),
           ]),
           e("input", { type: "submit", value: "Submit" }),
         ]),
       ]),
-      this.state.error && e("div", { class: "error" }, this.state.error),
+      this.state.error && e("div", { className: "error" }, this.state.error),
       this.state.success &&
-        e("div", { class: "success" }, [
+        e("div", { className: "success" }, [
           "Your token has been successfully updated. If this is the first time you're setting up 1Password Events API for Splunk, you'll have to enable the scripted inputs. If 1Password Events API for Splunk has already been setup, you'll have to disable and re-enable the scripted inputs for the changes to take effect.",
           e("br"),
           e("br"),

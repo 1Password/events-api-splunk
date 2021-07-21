@@ -54,6 +54,10 @@ restart: down start
 .PHONY: refresh
 refresh: remove start
 
+.PHONY: build_js
+build_js:
+	@cd onepassword_events_api && npm run build
+
 .PHONY: clean
 clean:
 	$(RM) -rf onepassword_events_api/local
