@@ -1,5 +1,5 @@
 # Run make new_version after changing this version
-VERSION=1.4.0
+VERSION=1.4.1
 
 .PHONY: compile_app_binary
 compile_app_binary:

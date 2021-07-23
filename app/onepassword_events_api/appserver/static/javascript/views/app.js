@@ -97,7 +97,7 @@ export default class SetupPage extends React.Component {
 			e(
 				"h2",
 				null,
-				"1Password Events API for Splunk Setup Page - Version 1.4.0",
+				"1Password Events API for Splunk Setup Page - Version 1.4.1",
 			),
 			e("div", null, [
 				e("form", { onSubmit: this.handleSubmit }, [

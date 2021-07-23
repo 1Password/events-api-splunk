@@ -5,7 +5,7 @@
 3. Click 'Install App from File'
 4. Select the relevant 1Password Splunk _tar_ file for your OS and click 'Upload'
 5. After a successful install, click 'Set up now' to set up the app
-6. Fill in the token generated from the 1Password.com and make sure the base URL is correct.
+6. Fill in the token generated from your 1Password account
 7. Click 'Submit'
-8. You should receive a message confirming changes were made and for changes to take effect, Splunk must be restarted.
-9. After signing back into Splunk, click the 1Password Splunk app in the apps listing and search `sourcetype="1password:insights:signin_attempts"` to see 1Password failed sign-in attempt logs. This data is ready to be analyzed, monitored and reported.
+8. Go to Settings -> Data Inputs -> Scripts -> and click Enable on the 1Password inputs you're interested in. Note that these scripts log to the default index unless configured to log elsewhere. Check out our [support page](https://support.1password.com/events-reporting-splunk/#step-3-set-up-the-1password-events-api-add-on) for more information.
+9. Click the 1Password Splunk app in the apps listing and search `sourcetype="1password:insights:signin_attempts"` or `sourcetype="1password:insights:item_usages"` to see your 1Password events. This data is ready to be analyzed, monitored and reported.
