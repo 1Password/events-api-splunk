@@ -29,4 +29,7 @@ If you do not have `go` locally installed, you can find installation steps [here
 - `make compile_app_binary`
   This command will update the Splunk Add-on, found in `app`, with any changes made from `src`.
 
+- `make new_version`
+  This command will update the JS portion of the Splunk Add-on to `Makefile VERSION` and build a release bundle for the web app.
+
 - `make build_all_binaries build_all_apps` will first compile the `src` code to various Operating System distributions, and then bundle them with the Splunk specific configurations (found in `app`). The output will be found in `builds/bin`.

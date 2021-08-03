@@ -2,3 +2,4 @@ splunkd.log
 onepassword_events_api/local
 onepassword_events_api/metadata/local.meta
 onepassword_events_api/bin/*
+onepassword_events_api/node_modules
