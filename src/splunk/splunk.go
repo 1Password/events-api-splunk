@@ -1,14 +1,15 @@
 package splunk
 
 import (
-	"bytes"
 	"context"
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -40,15 +41,14 @@ func NewSplunkAPI(sessionKey string) *SplunkAPI {
 	return client
 }
 
-func (e *SplunkAPI) request(ctx context.Context, method string, route string, body interface{}) (*http.Response, error) {
+func (e *SplunkAPI) request(ctx context.Context, method string, route string, data url.Values) (*http.Response, error) {
+	log.Printf("Calling Splunk API: %s", route)
+
 	var b io.Reader
-	if body != nil {
-		reqBody, err := json.Marshal(body)
-		if err != nil {
-			err := fmt.Errorf("could not marshal request: %w", err)
-			panic(err)
-		}
-		b = bytes.NewReader(reqBody)
+	contentLength := 0
+	if data != nil {
+		b = strings.NewReader(data.Encode())
+		contentLength = len(data.Encode())
 	}
 	req, err := http.NewRequestWithContext(ctx, method, e.BaseUrl+route, b)
 	if err != nil {
@@ -56,7 +56,9 @@ func (e *SplunkAPI) request(ctx context.Context, method string, route string, bo
 		return nil, err
 	}
 	req.Header.Add("Authorization", fmt.Sprintf("Splunk %s", e.SessionKey))
-	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Length", strconv.Itoa(contentLength))
+
 	res, err := e.client.Do(req)
 	if err != nil {
 		err := fmt.Errorf("could not make request: %w", err)

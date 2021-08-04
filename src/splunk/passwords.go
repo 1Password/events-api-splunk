@@ -4,7 +4,10 @@ import (
 	"context"
 	"encoding/xml"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"net/url"
 )
 
 
@@ -85,7 +88,7 @@ type PasswordsResponse struct {
 	} `xml:"entry"`
 } 
 
-func (s *SplunkAPI) Passwords(ctx context.Context, passwordRealm, passwordKey string) (*PasswordsResponse, error) {
+func (s *SplunkAPI) GetPasswords(ctx context.Context, passwordKey, passwordRealm string) (*PasswordsResponse, error) {
 	url := fmt.Sprintf("/servicesNS/nobody/onepassword_events_api/storage/passwords/%s:%s:", passwordRealm, passwordKey)
 	res, err := s.request(ctx, "GET", url, nil)
 	if err != nil {
@@ -107,4 +110,27 @@ func (s *SplunkAPI) Passwords(ctx context.Context, passwordRealm, passwordKey st
 	}
 
 	return passwordsResponse, nil
+}
+
+func (s *SplunkAPI) CreatePassword(ctx context.Context, name, password, realm string) (error) {
+	endpoint := "/servicesNS/nobody/onepassword_events_api/storage/passwords"
+	data := url.Values{}
+	data.Set("name", name)
+	data.Set("password", password)
+	data.Set("realm", realm)
+	res, err := s.request(ctx, "POST", endpoint, data)
+	if err != nil {
+		err := fmt.Errorf("could not make SplunkAPIRequest: %w", err)
+		return err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusConflict {
+		// A StatusConflict 409 if the password was already created
+		b, _ := ioutil.ReadAll(res.Body)
+		log.Println(string(b))
+		err := fmt.Errorf("received a non 201 response: %d", res.StatusCode)
+		return err
+	}
+
+	return nil
 }
