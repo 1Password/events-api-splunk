@@ -49,14 +49,3 @@ export async function perform(splunk_js_sdk, authToken, setup_options) {
     onepassword_name_space.app
   );
 }
-
-export async function get_apps(splunk_js_sdk) {
-  // Create the Splunk JS SDK Service object
-  const splunk_js_sdk_service = Config.create_splunk_js_sdk_service(
-    splunk_js_sdk,
-    onepassword_name_space
-  );
-
-  const apps = await Splunk.get_apps(splunk_js_sdk_service);
-  return apps.filter((appName) => appName !== onepassword_name_space.app);
-}

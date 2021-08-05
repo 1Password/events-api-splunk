@@ -7,7 +7,7 @@ http://docs.splunk.com/Documentation/Splunk/latest/Viz/PanelreferenceforSimplifi
 -->
 <dashboard isDashboard="false"
            hideTitle="true"
-           script="build/main_8227d69377c1f56037ef.js"
+           script="build/main_0326c9b2d3a7f85d987e.js"
            stylesheet="build/main_d9f06f004f20a2a3c3d0.css">
     <row>
         <panel>

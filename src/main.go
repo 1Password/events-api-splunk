@@ -50,8 +50,10 @@ func main() {
 
 	// Versions less than 1.5.0 of the Events API stored the token on disk
 	// If we find it, move it to the splunk storage/passwords service
+	var eventsToken string
 	if splunkEnv.Config.AuthToken != "" {
-		err := actions.CreateEventsToken(context.TODO(), splunkAPI, splunkEnv.Config.AuthToken)
+		eventsToken = splunkEnv.Config.AuthToken
+		err := actions.CreateEventsToken(context.TODO(), splunkAPI, eventsToken)
 		if err != nil {
 			err := fmt.Errorf("could not backup token: %w", err)
 			panic(err)
@@ -62,12 +64,12 @@ func main() {
 			err := fmt.Errorf("could clean auth token: %w", err)
 			panic(err)
 		}
-	}
-
-	eventsToken, err := actions.GetEventsToken(context.TODO(), splunkAPI)
-	if err != nil {
-		err := fmt.Errorf("could not get token: %w", err)
-		panic(err)
+	} else {
+		eventsToken, err = actions.GetEventsToken(context.TODO(), splunkAPI)
+		if err != nil {
+			err := fmt.Errorf("could not get token: %w", err)
+			panic(err)
+		}
 	}
 	
 	jwt, err := utils.ParseJWTClaims(eventsToken)

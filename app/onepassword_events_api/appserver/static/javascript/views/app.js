@@ -19,24 +19,7 @@ export default class SetupPage extends React.Component {
       authToken: "",
       error: "",
       success: false,
-      apps: [],
     };
-  }
-
-  async componentDidMount() {
-    let appList = [];
-    try {
-      appList = await Setup.get_apps(splunkjs);
-    } catch (error) {
-      console.log(error);
-      this.setState({
-        error: "Something went wrong - please refresh before continuing.",
-      });
-      return;
-    }
-    this.setState({
-      apps: appList,
-    });
   }
 
   handleSubmit = async (event) => {
@@ -107,15 +90,13 @@ export default class SetupPage extends React.Component {
         null,
         "1Password Events API for Splunk Setup Page - Version 1.5.0"
       ),
-      this.state.apps.length > 0 &&
-        e("div", null, [
-          e("div", { className: "warning" }, [
-            e("h3", null, [
-              "WARNING: Any installed app could gain access to your token. Before saving it below, make sure you know and trust the following applications:",
-            ]),
-            e("div", null, this.state.apps.join(", ")),
+      e("div", null, [
+        e("div", { className: "warning" }, [
+          e("h3", null, [
+            "WARNING: Any installed app could gain access to your token. Before saving it below, make sure you know and trust all of the installed apps and add-ons.",
           ]),
         ]),
+      ]),
       e("div", null, [
         e("form", { onSubmit: this.handleSubmit }, [
           e("label", null, [

@@ -166,12 +166,4 @@ function update_stanza_properties(
   return promisify(configuration_stanza_accessor.update)(new_stanza_properties);
 }
 
-async function get_apps(splunk_js_sdk_service) {
-  var splunk_js_sdk_service_apps = splunk_js_sdk_service.apps();
-  splunk_js_sdk_service_apps = await promisify(
-    splunk_js_sdk_service_apps.fetch
-  )();
-  return splunk_js_sdk_service_apps.list().map((app) => app.name);
-}
-
-export { update_configuration_file, get_apps };
+export { update_configuration_file };
