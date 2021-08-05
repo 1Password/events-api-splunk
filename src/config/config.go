@@ -61,10 +61,10 @@ func (e *SplunkEnv) UpdateConfig(newConfig Config) error {
 	defer configFile.Close()
 
 	type LocalConfig struct {
-		config Config
+		Config Config
 	}
 	lc := LocalConfig{
-		config: newConfig,
+		Config: newConfig,
 	}
 	encoder := toml.NewEncoder(configFile)
 	err = encoder.Encode(lc)
