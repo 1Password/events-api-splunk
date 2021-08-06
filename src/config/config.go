@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strconv"
 	"time"
 
 	"github.com/BurntSushi/toml"
@@ -53,9 +54,10 @@ func NewSplunkEnv(splunkHome string) (*SplunkEnv, error) {
 }
 
 func (e *SplunkEnv) UpdateConfig(newConfig Config) error {
-	configFile, err := os.Create(e.ConfigPath)
+	configTemp := e.ConfigPath + "_" + strconv.Itoa(os.Getpid()) // create temporary file
+	configFile, err := os.Create(configTemp)
 	if err != nil {
-		return fmt.Errorf("could not open config file: %w", err)
+		return fmt.Errorf("could not create config file: %w", err)
 	}
 	defer configFile.Close()
 
@@ -68,7 +70,12 @@ func (e *SplunkEnv) UpdateConfig(newConfig Config) error {
 	encoder := toml.NewEncoder(configFile)
 	err = encoder.Encode(lc)
 	if err != nil {
-		return fmt.Errorf("could not write to file: %w", err)
+		return fmt.Errorf("could not write toml to file: %w", err)
+	}
+
+	err = os.Rename(configTemp, e.ConfigPath)
+	if err != nil {
+		return fmt.Errorf("could not overwrite previous config: %w", err)
 	}
 	return nil
 }
