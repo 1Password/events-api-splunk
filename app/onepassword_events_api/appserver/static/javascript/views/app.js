@@ -93,7 +93,7 @@ export default class SetupPage extends React.Component {
       e("div", null, [
         e("div", { className: "warning" }, [
           e("h3", null, [
-            "WARNING: Any installed app could gain access to your token. Before saving it below, make sure you know and trust all of the installed apps and add-ons.",
+            "Your other Splunk apps or add-ons may be able to access your Events API token. Make sure you trust them before you add your token.",
           ]),
         ]),
       ]),
