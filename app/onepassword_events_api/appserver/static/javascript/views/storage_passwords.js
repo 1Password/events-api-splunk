@@ -16,7 +16,7 @@ async function write_secret(splunk_js_sdk_service, realm, name, secret) {
   );
 
   if (password_exists) {
-    delete_storage_password(storage_passwords_accessor, realm, name);
+    await delete_storage_password(storage_passwords_accessor, realm, name);
   }
 
   // wait for password to be deleted
@@ -53,8 +53,10 @@ function does_storage_password_exist(storage_passwords_accessor, realm, name) {
 }
 
 function delete_storage_password(storage_passwords_accessor, realm, name) {
-  // can't be promisified, for some reason
-  return storage_passwords_accessor.del(realm + ":" + name + ":");
+  return promisify(storage_passwords_accessor.del)(
+    realm + ":" + name + ":",
+    {}
+  );
 }
 
 function create_storage_password_stanza(
