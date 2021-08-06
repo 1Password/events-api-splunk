@@ -35,7 +35,7 @@ func main() {
 
 	splunkEnv, err := config.NewSplunkEnv(splunkHome)
 	if err != nil {
-		err := fmt.Errorf("could create new splunk env: %w", err)
+		err := fmt.Errorf("could not create new splunk env: %w", err)
 		panic(err)
 	}
 
@@ -61,7 +61,7 @@ func main() {
 		splunkEnv.Config.AuthToken = "" // Remove token on disk
 		err = splunkEnv.UpdateConfig(splunkEnv.Config)
 		if err != nil {
-			err := fmt.Errorf("could clean auth token: %w", err)
+			err := fmt.Errorf("could not remove auth token: %w", err)
 			panic(err)
 		}
 	} else {
@@ -71,7 +71,7 @@ func main() {
 			panic(err)
 		}
 	}
-	
+
 	jwt, err := utils.ParseJWTClaims(eventsToken)
 	if err != nil {
 		err := fmt.Errorf("could not parse jwt: %w", err)

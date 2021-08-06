@@ -10,7 +10,6 @@ import (
 	"net/url"
 )
 
-
 type PasswordsResponse struct {
 	XMLName    xml.Name `xml:"feed"`
 	Text       string   `xml:",chardata"`
@@ -86,7 +85,7 @@ type PasswordsResponse struct {
 			} `xml:"dict"`
 		} `xml:"content"`
 	} `xml:"entry"`
-} 
+}
 
 func (s *SplunkAPI) GetPasswords(ctx context.Context, passwordKey, passwordRealm string) (*PasswordsResponse, error) {
 	url := fmt.Sprintf("/servicesNS/nobody/onepassword_events_api/storage/passwords/%s:%s:", passwordRealm, passwordKey)
@@ -112,7 +111,7 @@ func (s *SplunkAPI) GetPasswords(ctx context.Context, passwordKey, passwordRealm
 	return passwordsResponse, nil
 }
 
-func (s *SplunkAPI) CreatePassword(ctx context.Context, name, password, realm string) (error) {
+func (s *SplunkAPI) CreatePassword(ctx context.Context, name, password, realm string) error {
 	endpoint := "/servicesNS/nobody/onepassword_events_api/storage/passwords"
 	data := url.Values{}
 	data.Set("name", name)

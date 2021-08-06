@@ -14,9 +14,9 @@ import (
 )
 
 type SplunkAPI struct {
-	client    *http.Client
+	client     *http.Client
 	SessionKey string
-	BaseUrl   string
+	BaseUrl    string
 }
 
 const DefaultClientTimeout = 15 * time.Second
@@ -29,14 +29,14 @@ func NewSplunkAPI(sessionKey string) *SplunkAPI {
 	}
 
 	c := &http.Client{
-		Timeout: DefaultClientTimeout,
+		Timeout:   DefaultClientTimeout,
 		Transport: transport,
 	}
-	
+
 	client := &SplunkAPI{
-		client:    c,
+		client:     c,
 		SessionKey: sessionKey,
-		BaseUrl: "https://localhost:8089", // Probably shouldn't hard code
+		BaseUrl:    "https://localhost:8089", // Probably shouldn't hard code
 	}
 	return client
 }
