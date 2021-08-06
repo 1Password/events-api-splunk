@@ -6,6 +6,11 @@ github.com/BurntSushi/toml
 github.com/dimchansky/utfbom
 # github.com/google/go-cmp v0.5.6
 ## explicit
+# github.com/hashicorp/go-cleanhttp v0.5.1
+github.com/hashicorp/go-cleanhttp
+# github.com/hashicorp/go-retryablehttp v0.7.0
+## explicit
+github.com/hashicorp/go-retryablehttp
 # github.com/stretchr/testify v1.7.0
 ## explicit
 # golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e

@@ -9,6 +9,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 type EventsAPI struct {
@@ -17,18 +19,16 @@ type EventsAPI struct {
 	BaseUrl   string
 }
 
-const DefaultClientTimeout = 15 * time.Second
-
 var Version string
 var DefaultUserAgent = fmt.Sprintf("1Password Events API for Splunk / %s", Version)
 
 func NewEventsAPI(authToken string, url string) *EventsAPI {
 	log.Println("New Events API Version:", Version)
-	c := &http.Client{
-		Timeout: DefaultClientTimeout,
-	}
+	retryHTTPClient := retryablehttp.NewClient()
+	retryHTTPClient.Logger = &loggerWrapper{}
+
 	client := &EventsAPI{
-		client:    c,
+		client:    retryHTTPClient.StandardClient(),
 		AuthToken: authToken,
 		BaseUrl:   url,
 	}
@@ -66,4 +66,11 @@ type CursorRequest struct {
 type CursorResetRequest struct {
 	Limit     int        `json:"limit"`
 	StartTime *time.Time `json:"start_time,omitempty"`
+}
+
+type loggerWrapper struct {
+}
+
+func (l *loggerWrapper) Printf(s string, i ...interface{}) {
+	log.Printf(s, i...)
 }
