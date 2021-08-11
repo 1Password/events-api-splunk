@@ -86,16 +86,11 @@ func main() {
 	}
 
 	eventsAPI := events.NewEventsAPI(eventsToken, url)
-	eventsRes, err := eventsAPI.Introspect(context.TODO())
-	if err != nil {
-		err := fmt.Errorf("introspect request failed: %w", err)
-		panic(err)
-	}
 
-	if utils.ContainsString(SignInAttemptsFeatureScope, eventsRes.Features) && EventBuildType == SignInAttemptsFeatureScope {
+	if jwt.Features.Contains(utils.SignInAttemptsFeatureScope) && EventBuildType == SignInAttemptsFeatureScope {
 		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.SignInCursorFile)
 		actions.StartSignIns(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
-	} else if utils.ContainsString(ItemUsageFeatureScope, eventsRes.Features) && EventBuildType == ItemUsageFeatureScope {
+	} else if jwt.Features.Contains(utils.ItemUsageFeatureScope) && EventBuildType == ItemUsageFeatureScope {
 		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.ItemUsageCursorFile)
 		actions.StartItemUsages(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
 	}
