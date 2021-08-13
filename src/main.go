@@ -15,9 +15,6 @@ import (
 	"go.1password.io/eventsapi-splunk/utils"
 )
 
-const ItemUsageFeatureScope = "itemusages"
-const SignInAttemptsFeatureScope = "signinattempts"
-
 var EventBuildType string // Injected at build time so we can make multiple apps
 
 func main() {
@@ -87,10 +84,10 @@ func main() {
 
 	eventsAPI := events.NewEventsAPI(eventsToken, url)
 
-	if jwt.Features.Contains(utils.SignInAttemptsFeatureScope) && EventBuildType == SignInAttemptsFeatureScope {
+	if jwt.Features.Contains(utils.SignInAttemptsFeatureScope) && EventBuildType == utils.SignInAttemptsFeatureScope {
 		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.SignInCursorFile)
 		actions.StartSignIns(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
-	} else if jwt.Features.Contains(utils.ItemUsageFeatureScope) && EventBuildType == ItemUsageFeatureScope {
+	} else if jwt.Features.Contains(utils.ItemUsageFeatureScope) && EventBuildType == utils.ItemUsageFeatureScope {
 		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.ItemUsageCursorFile)
 		actions.StartItemUsages(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
 	}
