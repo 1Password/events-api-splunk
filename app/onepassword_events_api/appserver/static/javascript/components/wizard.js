@@ -129,16 +129,28 @@ export default class Wizard extends React.Component {
           ]),
           e("div", { className: "controls-buttons" }, [
             this.state.currentStep !== 1 &&
-              e("button", { className: "prev", onClick: this.handlePrev }, [
+              e("button", { className: "prev btn", onClick: this.handlePrev }, [
                 "Previous",
               ]),
             this.state.currentStep !== this.state.totalSteps
-              ? e("button", { className: "next", onClick: this.handleNext }, [
-                  "Next",
-                ])
-              : e("button", { className: "next", onClick: this.handleSubmit }, [
-                  "Finish",
-                ]),
+              ? e(
+                  "button",
+                  { className: "next btn", onClick: this.handleNext },
+                  ["Next"]
+                )
+              : !this.state.success
+              ? e(
+                  "button",
+                  { className: "next btn", onClick: this.handleSubmit },
+                  ["Add Token"]
+                )
+              : e(
+                  "a",
+                  {
+                    href: "/app/onepassword_events_api",
+                  },
+                  [e("button", { className: "next btn" }, "Finish")]
+                ),
           ]),
         ]),
       ]),

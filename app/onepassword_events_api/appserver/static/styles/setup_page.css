@@ -69,9 +69,8 @@
 }
 
 .controls button {
-  width: 5.5em;
+  width: 6.5em;
   height: 2.5em;
-  padding: 0.3em 0.75em;
   margin-top: 1em;
   margin-bottom: 1em;
   border-radius: 0.5em;
@@ -100,8 +99,10 @@
 }
 
 .progress-container {
-  /* background: #f7f7f7; */
+  background: #f7f7f7;
   margin-top: 3em;
+  padding: 0.5em 1em;
+  border-radius: 1em;
 }
 
 .progress-container .step-short {

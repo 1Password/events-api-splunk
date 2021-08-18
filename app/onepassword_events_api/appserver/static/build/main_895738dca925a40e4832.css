@@ -1,10 +1,4 @@
-/*!******************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./appserver/static/styles/setup_page.css ***!
-  \******************************************************************************************/
 @import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap);
-/*!**********************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./appserver/static/styles/setup_page.css (1) ***!
-  \**********************************************************************************************/
 /* -------------------------------------------------------------------------- */
 /* New Dashboard Styling                                                      */
 /* -------------------------------------------------------------------------- */
@@ -74,9 +68,8 @@
 }
 
 .controls button {
-  width: 5.5em;
+  width: 6.5em;
   height: 2.5em;
-  padding: 0.3em 0.75em;
   margin-top: 1em;
   margin-bottom: 1em;
   border-radius: 0.5em;
@@ -105,8 +98,10 @@
 }
 
 .progress-container {
-  /* background: #f7f7f7; */
+  background: #f7f7f7;
   margin-top: 3em;
+  padding: 0.5em 1em;
+  border-radius: 1em;
 }
 
 .progress-container .step-short {
