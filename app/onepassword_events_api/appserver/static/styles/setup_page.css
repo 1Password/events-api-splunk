@@ -4,6 +4,12 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
+.dashboard-body {
+  background: #ffffff;
+  margin-top: 100px !important;
+  border-radius: 10px;
+}
+
 .version {
   border-radius: 1.25em;
   border: 1px solid #ccc;

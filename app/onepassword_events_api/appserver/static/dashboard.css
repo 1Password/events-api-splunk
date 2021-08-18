@@ -2,16 +2,16 @@
   background: #0a2d4d;
 }
 
-.splunk-header > :nth-child(2) {
+.splunk-header > :nth-child(2),
+header > :nth-child(2) {
   background: #0572ec;
 }
 
-.splunk-header > :nth-child(2) span {
+.splunk-header > :nth-child(2) span,
+header > :nth-child(2) span {
   color: #ffffff;
 }
 
 .dashboard-body {
   background: #ffffff;
-  margin-top: 100px !important;
-  border-radius: 10px;
 }

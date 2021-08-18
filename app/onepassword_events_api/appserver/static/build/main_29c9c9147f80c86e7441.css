@@ -3,6 +3,12 @@
 /* New Dashboard Styling                                                      */
 /* -------------------------------------------------------------------------- */
 
+.dashboard-body {
+  background: #ffffff;
+  margin-top: 100px !important;
+  border-radius: 10px;
+}
+
 .version {
   border-radius: 1.25em;
   border: 1px solid #ccc;
