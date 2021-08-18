@@ -8,30 +8,22 @@
 
 import React from "react";
 import * as Setup from "./setup_page.js";
+import Wizard from "../components/wizard.js";
 
 const audienceDEPRECATED = "com.1password.streamingservice";
 const e = React.createElement;
 export default class SetupPage extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      authToken: "",
-      error: "",
-      success: false,
-    };
   }
 
-  handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const errorMessage = this.validateJWT(this.state.authToken);
+  handleSubmit = async (authToken) => {
+    const errorMessage = this.validateJWT(authToken);
     if (typeof errorMessage !== "undefined") {
-      this.setState({
+      return {
         error: errorMessage,
         success: false,
-      });
-      return;
+      };
     }
 
     const options = {
@@ -44,21 +36,20 @@ export default class SetupPage extends React.Component {
     };
 
     try {
-      await Setup.perform(splunkjs, this.state.authToken, options);
+      await Setup.perform(splunkjs, authToken, options);
     } catch (error) {
       console.log(error);
-      this.setState({
+      return {
         error:
           "Something went wrong while storing your token - please try again.",
         success: false,
-      });
-      return;
+      };
     }
 
-    this.setState({
+    return {
       error: "",
       success: true,
-    });
+    };
   };
 
   // validateJWT verifies that the token has 3 parts -
@@ -84,51 +75,76 @@ export default class SetupPage extends React.Component {
   }
 
   render() {
-    return e("div", null, [
-      e(
-        "h1",
-        null,
-        "1Password Events API for Splunk Setup Page - Version 1.5.0"
-      ),
-      e("div", null, [
-        e("div", { className: "warning" }, [
-          e("h3", null, [
-            "Your other Splunk apps or add-ons may be able to access your Events API token. Make sure you trust them before you add your token.",
-          ]),
-        ]),
-      ]),
-      e("div", null, [
-        e("form", { onSubmit: this.handleSubmit }, [
-          e("label", null, [
-            e("h3", null, ["Events API Token"]),
-            e("input", {
-              type: "text",
-              value: this.state.authToken,
-              onChange: (e) => {
-                this.setState({
-                  authToken: e.target.value,
-                });
-              },
-            }),
-          ]),
-          e("input", { type: "submit", value: "Submit" }),
-        ]),
-      ]),
-      this.state.error && e("div", { className: "error" }, this.state.error),
-      this.state.success &&
-        e("div", { className: "success" }, [
-          "Your token has been successfully updated. If this is the first time you're setting up 1Password Events API for Splunk, you'll have to enable the scripted inputs. If 1Password Events API for Splunk has already been setup, you'll have to disable and re-enable the scripted inputs for the changes to take effect.",
-          e("br"),
-          e("br"),
-          "For more information, check out the support article ",
-          e(
-            "a",
-            {
-              href: "https://support.1password.com/events-reporting-splunk",
-            },
-            "here."
-          ),
-        ]),
-    ]);
+    return e(
+      Wizard,
+      {
+        steps: [
+          {
+            description:
+              "First we need to generate your Events API token. Let's get started.",
+            step: e("span", null, [
+              "Sign in to your ",
+              e(
+                "a",
+                {
+                  target: "_blank",
+                  href:
+                    "https://start.1password.com/integrations/event_reporting/create?type=splunk",
+                },
+                "1Password.com"
+              ),
+              " business account.",
+            ]),
+            stepShort: "Sign in to 1Password.com",
+            img: "step-one.png",
+          },
+          {
+            description: "",
+            step: e("span", null, [
+              "Once you’re signed in, click ",
+              e("strong", null, "Integrations"),
+              " in the sidebar. Scroll down to find ",
+              e("strong", null, "Splunk"),
+              " under Events Reporting.",
+            ]),
+            stepShort: "Navigate to the Splunk integration",
+            img: "step-two.png",
+          },
+          {
+            description: "",
+            step: e("span", null, [
+              "Go through the Integration setup process, creating a ",
+              e("strong", null, "System Name"),
+              " and a ",
+              e("strong", null, "Token Name"),
+              ". Once you’re finished you’ll have your Token.",
+            ]),
+            stepShort: "Get your Events API token",
+            img: "step-three.png",
+          },
+          {
+            description: "",
+            step: e("span", null, [
+              e(
+                "strong",
+                null,
+                "Make sure to save your token somewhere safe. "
+              ),
+              "You won’t be able to view it again.",
+            ]),
+            stepShort: "Save your Events API token",
+            img: "step-four.png",
+          },
+          {
+            description: "Enter your Events API token below:",
+            step: "",
+            stepShort: "Enter your Events API token",
+            warning: true,
+          },
+        ],
+        handleSubmit: this.handleSubmit,
+      },
+      null
+    );
   }
 }

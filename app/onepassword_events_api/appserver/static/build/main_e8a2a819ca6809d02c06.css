@@ -1,8 +1,13 @@
+/*!******************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./appserver/static/styles/setup_page.css ***!
+  \******************************************************************************************/
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap);
+/*!**********************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./appserver/static/styles/setup_page.css (1) ***!
+  \**********************************************************************************************/
 /* -------------------------------------------------------------------------- */
 /* New Dashboard Styling                                                      */
 /* -------------------------------------------------------------------------- */
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
 .version {
   border-radius: 1.25em;
@@ -234,3 +239,4 @@
   padding: 40px 60px;
   font-family: "Inter", sans-serif;
 }
+
