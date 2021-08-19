@@ -1,5 +1,7 @@
 import React from "react";
 
+import { onepassword_name_space } from "../views/setup_page";
+
 const VERSION = "1.6.0";
 
 const e = React.createElement;
@@ -8,7 +10,7 @@ export default class Wizard extends React.Component {
     super(props);
 
     this.state = {
-      currentStep: 1,
+      currentStep: 1, // currentStep is using one-based indexing
       totalSteps: props.steps.length,
       success: false,
       error: "",
@@ -17,14 +19,12 @@ export default class Wizard extends React.Component {
   }
 
   handleNext = async (event) => {
-    event.preventDefault();
     this.setState({
       currentStep: this.state.currentStep + 1,
     });
   };
 
   handlePrev = async (event) => {
-    event.preventDefault();
     this.setState({
       currentStep: this.state.currentStep - 1,
       success: false,
@@ -33,20 +33,20 @@ export default class Wizard extends React.Component {
   };
 
   handleSkip = async (event) => {
-    event.preventDefault();
     this.setState({
       currentStep: this.state.totalSteps,
     });
   };
 
   handleSubmit = async (event) => {
-    event.preventDefault();
     const result = await this.props.handleSubmit(this.state.authToken);
     this.setState(result);
   };
 
   render() {
+    // this.state.currentStep is using one-based indexing
     const stepDetails = this.props.steps[this.state.currentStep - 1];
+
     return e("div", { className: "container" }, [
       e("div", { className: "main-contents" }, [
         e("div", { className: "version" }, [`Version ${VERSION}`]),
@@ -70,7 +70,7 @@ export default class Wizard extends React.Component {
             ]),
           stepDetails.img &&
             e("img", {
-              src: `/static/app/onepassword_events_api/img/${stepDetails.img}`,
+              src: `/static/app/${onepassword_name_space.app}/img/${stepDetails.img}`,
             }),
           this.state.currentStep === this.state.totalSteps &&
             e("div", { className: "token block" }, [
@@ -123,9 +123,8 @@ export default class Wizard extends React.Component {
         ]),
         e("div", { className: "controls block" }, [
           e("a", { onClick: this.handleSkip }, [
-            this.state.currentStep === 1
-              ? "I already have my Events API token"
-              : "",
+            this.state.currentStep === 1 &&
+              "I already have my Events API token",
           ]),
           e("div", { className: "controls-buttons" }, [
             this.state.currentStep !== 1 &&
@@ -147,7 +146,7 @@ export default class Wizard extends React.Component {
               : e(
                   "a",
                   {
-                    href: "/app/onepassword_events_api",
+                    href: `/app/${onepassword_name_space.app}`,
                   },
                   [e("button", { className: "next btn" }, "Finish")]
                 ),
