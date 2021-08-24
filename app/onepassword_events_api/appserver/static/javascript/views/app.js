@@ -80,66 +80,17 @@ export default class SetupPage extends React.Component {
       {
         steps: [
           {
-            description:
-              "First we need to generate your Events API token. Let's get started.",
-            step: e("span", null, [
-              "Sign in to your ",
-              e(
-                "a",
-                {
-                  target: "_blank",
-                  href:
-                    "https://start.1password.com/integrations/event_reporting/create?type=splunk",
-                },
-                "1Password.com"
-              ),
-              " business account.",
+            description: e("span", null, [
+              "First we need to generate your Events API token. Let’s get started.",
+              e("br"),
+              e("br"),
+              "Clicking the button below will direct you to the Splunk integration setup on 1Password.com. Follow the instructions and return here.",
             ]),
-            stepShort: "Sign in to 1Password.com",
-            img: "step-one.png",
-          },
-          {
-            description: "",
-            step: e("span", null, [
-              "Once you’re signed in, click ",
-              e("strong", null, "Integrations"),
-              " in the sidebar. Scroll down to find ",
-              e("strong", null, "Splunk"),
-              " under Events Reporting.",
-            ]),
-            stepShort: "Navigate to the Splunk integration",
-            img: "step-two.png",
-          },
-          {
-            description: "",
-            step: e("span", null, [
-              "Go through the Integration setup process, creating a ",
-              e("strong", null, "System Name"),
-              " and a ",
-              e("strong", null, "Token Name"),
-              ". Once you’re finished you’ll have your Token.",
-            ]),
-            stepShort: "Get your Events API token",
-            img: "step-three.png",
-          },
-          {
-            description: "",
-            step: e("span", null, [
-              e(
-                "strong",
-                null,
-                "Make sure to save your token somewhere safe. "
-              ),
-              "You won’t be able to view it again.",
-            ]),
-            stepShort: "Save your Events API token",
-            img: "step-four.png",
-          },
-          {
-            description: "Enter your Events API token below:",
-            step: "",
-            stepShort: "Enter your Events API token",
             warning: true,
+            redirect: true,
+          },
+          {
+            description: "Please enter your Events API token below:",
           },
         ],
         handleSubmit: this.handleSubmit,

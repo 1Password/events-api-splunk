@@ -1,5 +1,14 @@
-.dashboard-dashboardpage {
-  background: #0a2d4d;
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-image: url("/static/app/onepassword_events_api/img/background.png");
+  background-color: #0a2d4d;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom;
 }
 
 .splunk-header > :nth-child(2),
