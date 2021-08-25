@@ -68,7 +68,7 @@ export default function Wizard(props) {
           e("div", { className: "token block" }, [
             e("input", {
               type: "text",
-              placeholder: "Enter your token here",
+              placeholder: "Your Events API Token",
               value: authToken,
               onChange: (e) => setAuthToken(e.target.value),
             }),
