@@ -48,14 +48,28 @@
 .generate {
   background: #0572ec;
   color: #ffffff;
-  width: 1pem;
+  width: 18em;
   height: 2.5em;
   margin-top: 1em;
   margin-bottom: 1em;
   border-radius: 0.5em;
   font-size: 1.2em;
   line-height: 130%;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.generate:active {
+  background: #0450a6;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+}
+
+.generate:hover {
+  background: #0567d5;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: none;
 }
 
 .controls {
@@ -79,6 +93,20 @@
   background: #157901;
   color: #ffffff;
   margin-left: 1em;
+}
+
+.controls .next:active {
+  background: #0f5501;
+  color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: none;
+}
+
+.controls .next:hover {
+  background: #136d01;
+  color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: none;
 }
 
 .token {
@@ -107,6 +135,20 @@
   color: #ffffff;
   margin-left: 1em;
   padding: 0 0.5em;
+}
+
+.token .submit:active {
+  background: #0450a6;
+  color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: none;
+}
+
+.token .submit:hover {
+  background: #0567d5;
+  color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: none;
 }
 
 .error {
@@ -209,11 +251,17 @@
 }
 
 .dashboard-body {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: auto;
 }
 
 #main_container {
-  padding: 40px 60px;
+  font-family: "Inter", sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
   font-family: "Inter", sans-serif;
 }

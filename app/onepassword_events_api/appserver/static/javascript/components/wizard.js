@@ -56,7 +56,7 @@ export default function Wizard(props) {
               target: "_blank",
               href: `https://start.${HOST}/signin?landing-page=%2Fintegrations%2Fevents_reporting%2Fcreate%3Ftype%3Dsplunk%26name%3D${location.hostname}`,
             },
-            e("button", { className: "generate btn", onClick: handleNext }, [
+            e("button", { className: "generate", onClick: handleNext }, [
               e("img", {
                 className: "plus",
                 src: "/static/app/onepassword_events_api/img/plus.svg",
@@ -77,7 +77,7 @@ export default function Wizard(props) {
               : e(
                   "button",
                   {
-                    className: "btn",
+                    className: "submit",
                     onClick: handleSubmit,
                   },
                   "Submit"
@@ -128,7 +128,7 @@ export default function Wizard(props) {
             e(
               "button",
               {
-                className: result.success ? "btn next" : "btn",
+                className: result.success ? "next btn" : "btn",
                 disabled: !result.success,
               },
               "Finish"
