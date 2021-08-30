@@ -6,12 +6,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 type ItemUsage struct {
 	UUID        string          `json:"uuid"`
-	Timestamp   time.Time       `json:"timestamp"`
+	Timestamp   FixedFormatTime `json:"timestamp"`
 	UsedVersion uint32          `json:"used_version"`
 	VaultUUID   string          `json:"vault_uuid"`
 	ItemUUID    string          `json:"item_uuid"`
