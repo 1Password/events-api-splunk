@@ -6,13 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 type SignInAttempt struct {
 	UUID        string                  `json:"uuid"`
 	SessionUUID string                  `json:"session_uuid"`
-	Timestamp   time.Time               `json:"timestamp"`
+	Timestamp   FixedFormatTime         `json:"timestamp"`
 	Country     string                  `json:"country"`
 	Category    string                  `json:"category"`
 	Type        string                  `json:"type"`
