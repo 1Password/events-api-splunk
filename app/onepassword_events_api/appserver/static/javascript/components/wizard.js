@@ -30,7 +30,7 @@ export default function Wizard(props) {
 
   return e("div", { className: "container" }, [
     e("div", { className: "main-contents" }, [
-      e("div", { className: "version" }, [`Version ${VERSION}`]),
+      e("div", { className: "version block" }, [`Version ${VERSION}`]),
       e(
         "div",
         { className: "title" },

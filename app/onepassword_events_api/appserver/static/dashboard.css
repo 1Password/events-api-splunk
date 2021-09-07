@@ -4,11 +4,11 @@ body {
 }
 
 body {
-  background-image: url("/static/app/onepassword_events_api/img/background.png");
+  background-image: url("/static/app/onepassword_events_api/img/background-left.png"),
+    url("/static/app/onepassword_events_api/img/background-right.png");
   background-color: #0a2d4d;
   background-repeat: no-repeat;
-  background-size: contain;
-  background-position: bottom;
+  background-position: left bottom, right bottom;
 }
 
 .splunk-header > :nth-child(2),
