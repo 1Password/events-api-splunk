@@ -61,14 +61,14 @@ export default function Wizard(props) {
                 className: "plus",
                 src: "/static/app/onepassword_events_api/img/plus.svg",
               }),
-              "Generate your Events API token",
+              "Generate an Events API token",
             ])
           ),
         currentStep === totalSteps &&
           e("div", { className: "token block" }, [
             e("input", {
               type: "text",
-              placeholder: "Your Events API Token",
+              placeholder: "Events API Token",
               value: authToken,
               onChange: (e) => setAuthToken(e.target.value),
             }),
@@ -86,30 +86,30 @@ export default function Wizard(props) {
         result.error && e("div", { className: "error block" }, result.error),
         result.success &&
           e("div", { className: "success block" }, [
-            "Your token has been successfully updated. If this is ",
-            e(
-              "strong",
-              null,
-              "the first time you're setting up 1Password Events Reporting for Splunk, you'll have to enable the scripted inputs."
-            ),
+            "Your token has been added. Next, you'll need to configure the index and scripted input for the add-on.",
             e("br"),
             e("br"),
-            "If 1Password Events Reporting for Splunk ",
-            e(
-              "strong",
-              null,
-              "has already been setup, you'll have to disable and re-enable the scripted inputs for the changes to take effect."
-            ),
-            e("br"),
-            e("br"),
-            "For more information, check out the ",
+            "If this is the first time you're setting it up, ",
             e(
               "a",
               {
                 target: "_blank",
-                href: "https://support.1password.com/events-reporting-splunk",
+                href:
+                  "https://support.1password.com/events-reporting-splunk/#step-3-set-up-the-1password-events-api-add-on",
               },
-              "support article here."
+              "learn how to setup the 1Password Events API add-on."
+            ),
+            e("br"),
+            e("br"),
+            "If you're changing the token for an existing add-on, you'll need to ",
+            e(
+              "a",
+              {
+                target: "_blank",
+                href:
+                  "https://support.1password.com/events-reporting-splunk/#configure-the-scripted-input",
+              },
+              "turn off the scripted input for the index, then turn it back on."
             ),
           ]),
       ]),

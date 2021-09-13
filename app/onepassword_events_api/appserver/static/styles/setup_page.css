@@ -215,8 +215,7 @@ a:hover {
 }
 
 .success a {
-  font-weight: 600;
-  color: #000000;
+  color: #262626;
   text-decoration: underline;
 }
 

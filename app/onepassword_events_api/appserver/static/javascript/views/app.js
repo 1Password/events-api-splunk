@@ -58,16 +58,16 @@ export default class SetupPage extends React.Component {
   validateJWT(token) {
     const tokenComponents = token.split(".");
     if (tokenComponents.length !== 3) {
-      return "Invalid JSON Web Token - too short";
+      return "This doesn't look like a valid JSON Web Token.";
     }
     let payload;
     try {
       payload = JSON.parse(atob(tokenComponents[1]));
     } catch (error) {
-      return "Invalid JSON Web Token - " + error.message;
+      return "This doesn't look like a valid JSON Web Token.";
     }
     if (!payload.aud || payload.aud.length !== 1) {
-      return "Invalid JSON Web Token - missing aud";
+      return "This doesn't look like a valid JSON Web Token.";
     }
     if (payload.aud[0] === audienceDEPRECATED) {
       return "Please generate a new token";
@@ -81,16 +81,21 @@ export default class SetupPage extends React.Component {
         steps: [
           {
             description: e("span", null, [
-              "First we need to generate your Events API token. Let’s get started.",
+              "To get started, you'll need to generate an Events API token.",
               e("br"),
               e("br"),
-              "Clicking the button below will direct you to the Splunk integration setup on 1Password.com. Follow the instructions and return here.",
+              'Click "Generate an Events API token", sign in to your account on',
+              e("br"),
+              "1Password.com, then follow the onscreen instructions.",
+              e("br"),
+              e("br"),
+              "After you get your token, come back here to enter it.",
             ]),
             warning: true,
             redirect: true,
           },
           {
-            description: "Please enter your Events API token below:",
+            description: "Enter the token you got from 1Password.com:",
           },
         ],
         handleSubmit: this.handleSubmit,
