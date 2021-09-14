@@ -8,30 +8,22 @@
 
 import React from "react";
 import * as Setup from "./setup_page.js";
+import Wizard from "../components/wizard.js";
 
 const audienceDEPRECATED = "com.1password.streamingservice";
 const e = React.createElement;
 export default class SetupPage extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      authToken: "",
-      error: "",
-      success: false,
-    };
   }
 
-  handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const errorMessage = this.validateJWT(this.state.authToken);
+  handleSubmit = async (authToken) => {
+    const errorMessage = this.validateJWT(authToken);
     if (typeof errorMessage !== "undefined") {
-      this.setState({
+      return {
         error: errorMessage,
         success: false,
-      });
-      return;
+      };
     }
 
     const options = {
@@ -44,21 +36,20 @@ export default class SetupPage extends React.Component {
     };
 
     try {
-      await Setup.perform(splunkjs, this.state.authToken, options);
+      await Setup.perform(splunkjs, authToken, options);
     } catch (error) {
       console.log(error);
-      this.setState({
+      return {
         error:
           "Something went wrong while storing your token - please try again.",
         success: false,
-      });
-      return;
+      };
     }
 
-    this.setState({
+    return {
       error: "",
       success: true,
-    });
+    };
   };
 
   // validateJWT verifies that the token has 3 parts -
@@ -67,16 +58,16 @@ export default class SetupPage extends React.Component {
   validateJWT(token) {
     const tokenComponents = token.split(".");
     if (tokenComponents.length !== 3) {
-      return "Invalid JSON Web Token - too short";
+      return "This doesn't look like a valid JSON Web Token.";
     }
     let payload;
     try {
       payload = JSON.parse(atob(tokenComponents[1]));
     } catch (error) {
-      return "Invalid JSON Web Token - " + error.message;
+      return "This doesn't look like a valid JSON Web Token.";
     }
     if (!payload.aud || payload.aud.length !== 1) {
-      return "Invalid JSON Web Token - missing aud";
+      return "This doesn't look like a valid JSON Web Token.";
     }
     if (payload.aud[0] === audienceDEPRECATED) {
       return "Please generate a new token";
@@ -84,51 +75,32 @@ export default class SetupPage extends React.Component {
   }
 
   render() {
-    return e("div", null, [
-      e(
-        "h1",
-        null,
-        "1Password Events API for Splunk Setup Page - Version 1.5.3"
-      ),
-      e("div", null, [
-        e("div", { className: "warning" }, [
-          e("h3", null, [
-            "Your other Splunk apps or add-ons may be able to access your Events API token. Make sure you trust them before you add your token.",
-          ]),
-        ]),
-      ]),
-      e("div", null, [
-        e("form", { onSubmit: this.handleSubmit }, [
-          e("label", null, [
-            e("h3", null, ["Events API Token"]),
-            e("input", {
-              type: "text",
-              value: this.state.authToken,
-              onChange: (e) => {
-                this.setState({
-                  authToken: e.target.value,
-                });
-              },
-            }),
-          ]),
-          e("input", { type: "submit", value: "Submit" }),
-        ]),
-      ]),
-      this.state.error && e("div", { className: "error" }, this.state.error),
-      this.state.success &&
-        e("div", { className: "success" }, [
-          "Your token has been successfully updated. If this is the first time you're setting up 1Password Events API for Splunk, you'll have to enable the scripted inputs. If 1Password Events API for Splunk has already been setup, you'll have to disable and re-enable the scripted inputs for the changes to take effect.",
-          e("br"),
-          e("br"),
-          "For more information, check out the support article ",
-          e(
-            "a",
-            {
-              href: "https://support.1password.com/events-reporting-splunk",
-            },
-            "here."
-          ),
-        ]),
-    ]);
+    return e(
+      Wizard,
+      {
+        steps: [
+          {
+            description: e("span", null, [
+              "To get started, you'll need to generate an Events API token.",
+              e("br"),
+              e("br"),
+              'Click "Generate an Events API token", sign in to your account on',
+              e("br"),
+              "1Password.com, then follow the onscreen instructions.",
+              e("br"),
+              e("br"),
+              "After you get your token, come back here to enter it.",
+            ]),
+            warning: true,
+            redirect: true,
+          },
+          {
+            description: "Enter the token you got from 1Password.com:",
+          },
+        ],
+        handleSubmit: this.handleSubmit,
+      },
+      null
+    );
   }
 }

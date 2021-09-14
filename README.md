@@ -1,4 +1,4 @@
-# Events API for Splunk
+# Events Reporting for Splunk
 
 This repository contains code to integrate Splunk with 1Password's Events API. It includes a Splunk Add-on that meets Splunk's AppInspect requirements, binary source code, and make commands to build the project.
 

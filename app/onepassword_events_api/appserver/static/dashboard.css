@@ -1,0 +1,26 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-image: url("/static/app/onepassword_events_api/img/background-left.png"),
+    url("/static/app/onepassword_events_api/img/background-right.png");
+  background-color: #0a2d4d;
+  background-repeat: no-repeat;
+  background-position: left bottom, right bottom;
+}
+
+.splunk-header > :nth-child(2),
+header > :nth-child(2) {
+  background: #0572ec;
+}
+
+.splunk-header > :nth-child(2) span,
+header > :nth-child(2) span {
+  color: #ffffff;
+}
+
+.dashboard-body {
+  background: #ffffff;
+}

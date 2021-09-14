@@ -1,8 +1,7 @@
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap);
 /* -------------------------------------------------------------------------- */
 /* New Dashboard Styling                                                      */
 /* -------------------------------------------------------------------------- */
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 #main_container {
   font-family: "Inter", sans-serif;
@@ -234,3 +233,4 @@ a:hover {
   border: none !important;
   box-shadow: none !important;
 }
+
