@@ -1,22 +1,39 @@
 import React, { useState } from "react";
 
-import { onepassword_name_space } from "../views/setup_page";
-
-const VERSION = "1.6.0";
-const HOST = "1password.com";
+import { VERSION, HOST, onepassword_name_space } from "../views/setup_page";
 
 const e = React.createElement;
-export default function Wizard(props) {
-  const totalSteps = props.steps.length;
+
+export const SetupWizard = (props) => {
+  const steps = [
+    {
+      description: e("span", null, [
+        "To get started, you'll need to generate an Events API token.",
+        e("br"),
+        e("br"),
+        'Click "Generate an Events API token", sign in to your account on',
+        e("br"),
+        "1Password.com, then follow the onscreen instructions.",
+        e("br"),
+        e("br"),
+        "After you get your token, come back here to enter it.",
+      ]),
+    },
+    {
+      description: "Enter the token you got from 1Password.com:",
+    },
+  ];
+
+  const totalSteps = steps.length;
   const [currentStep, setCurrentStep] = useState(1);
   const [result, setResult] = useState({ success: false, error: "" });
   const [authToken, setAuthToken] = useState("");
 
-  const handleNext = async () => {
+  const handleNext = () => {
     setCurrentStep(currentStep + 1);
   };
 
-  const handleSkip = async () => {
+  const handleSkip = () => {
     setCurrentStep(totalSteps);
   };
 
@@ -26,7 +43,7 @@ export default function Wizard(props) {
   };
 
   // currentStep is using one-based indexing
-  const stepDetails = props.steps[currentStep - 1];
+  const stepDetails = steps[currentStep - 1];
 
   return e("div", { className: "container" }, [
     e("div", { className: "main-contents" }, [
@@ -42,14 +59,14 @@ export default function Wizard(props) {
           { className: "description" },
           e("div", { className: "block" }, stepDetails.description)
         ),
-        stepDetails.warning &&
+        currentStep == 1 &&
           (!result.success || result.error) &&
           e(
             "div",
             { className: "warning block" },
             "Your other Splunk apps or add-ons may be able to access your Events API token. Make sure you trust them before you add your token."
           ),
-        stepDetails.redirect &&
+        currentStep == 1 &&
           e(
             "a",
             {
@@ -138,4 +155,4 @@ export default function Wizard(props) {
       ]),
     ]),
   ]);
-}
+};

@@ -27,9 +27,9 @@ const setupXMLCSSHash = {
 };
 
 const wizardVersion = {
-  files: "./appserver/static/javascript/components/wizard.js",
-  from: /const VERSION \= ".*";/,
-  to: `const VERSION = "${package.version}";`,
+  files: "./appserver/static/javascript/setup_page.js",
+  from: /export const VERSION \= ".*";/,
+  to: `export const VERSION = "${package.version}";`,
 };
 
 replace(appConfVersion);
