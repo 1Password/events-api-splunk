@@ -59,14 +59,14 @@ export const SetupWizard = (props) => {
           { className: "description" },
           e("div", { className: "block" }, stepDetails.description)
         ),
-        currentStep == 1 &&
+        currentStep === 1 &&
           (!result.success || result.error) &&
           e(
             "div",
             { className: "warning block" },
             "Your other Splunk apps or add-ons may be able to access your Events API token. Make sure you trust them before you add your token."
           ),
-        currentStep == 1 &&
+        currentStep === 1 &&
           e(
             "a",
             {
