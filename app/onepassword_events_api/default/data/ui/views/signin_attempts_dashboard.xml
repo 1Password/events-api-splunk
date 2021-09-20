@@ -18,6 +18,13 @@
         <latest>now</latest>
       </search>
     </input>
+    <input type="dropdown" token="bar_charts_by">
+      <label>Bar Charts By</label>
+      <default>User UUID</default>
+      <choice value="uuid">User UUID</choice>
+      <choice value="email">User Email</choice>
+      <choice value="name">User Name</choice>
+    </input>
   </fieldset>
   <row>
     <panel>
@@ -89,12 +96,12 @@
       <chart>
         <title>Top Failed Sign-ins</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:signin_attempts"| spath category | search category!=success |  stats count by target_user.uuid | sort - count</query>
+          <query>index=$index$ sourcetype="1password:insights:signin_attempts"| spath category | search category!=success |  stats count by target_user.$bar_charts_by$ | sort - count</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.rotation">45</option>
-        <option name="charting.axisTitleX.text">email</option>
+        <option name="charting.axisTitleX.text">$bar_charts_by$</option>
         <option name="charting.chart">column</option>
         <option name="charting.chart.showDataLabels">all</option>
         <option name="charting.chart.stackMode">default</option>
@@ -108,12 +115,12 @@
       <chart>
         <title>Top Sign-ins</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:signin_attempts"| spath category | search category=success |  stats count by target_user.uuid | sort - count</query>
+          <query>index=$index$ sourcetype="1password:insights:signin_attempts"| spath category | search category=success |  stats count by target_user.$bar_charts_by$ | sort - count</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.rotation">45</option>
-        <option name="charting.axisTitleX.text">email</option>
+        <option name="charting.axisTitleX.text">$bar_charts_by$</option>
         <option name="charting.chart">column</option>
         <option name="charting.chart.stackMode">default</option>
         <option name="charting.drilldown">none</option>
