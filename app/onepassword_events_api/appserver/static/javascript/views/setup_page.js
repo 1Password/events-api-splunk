@@ -10,6 +10,9 @@ const CUSTOM_CONF_STANZA = "config";
 const SECRET_REALM = "events_reporting_realm";
 const SECRET_NAME = "events_api_token";
 
+export const VERSION = "1.6.0";
+export const HOST = "1password.com";
+
 export const onepassword_name_space = {
   owner: "nobody",
   app: "onepassword_events_api",

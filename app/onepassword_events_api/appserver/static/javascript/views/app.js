@@ -8,7 +8,7 @@
 
 import React from "react";
 import * as Setup from "./setup_page.js";
-import Wizard from "../components/wizard.js";
+import { SetupWizard } from "../components/wizard.js";
 
 const audienceDEPRECATED = "com.1password.streamingservice";
 const e = React.createElement;
@@ -56,48 +56,31 @@ export default class SetupPage extends React.Component {
   // the header, payload, and signature
   // validateJWT only attempts to parse the payload to catch potential issues
   validateJWT(token) {
+    const invalidJWTError = "This doesn't look like a valid JSON Web Token.";
+    const deprecatedJWTErrror = "Please generate a new token.";
+
     const tokenComponents = token.split(".");
     if (tokenComponents.length !== 3) {
-      return "This doesn't look like a valid JSON Web Token.";
+      return invalidJWTError;
     }
     let payload;
     try {
       payload = JSON.parse(atob(tokenComponents[1]));
     } catch (error) {
-      return "This doesn't look like a valid JSON Web Token.";
+      return invalidJWTError;
     }
     if (!payload.aud || payload.aud.length !== 1) {
-      return "This doesn't look like a valid JSON Web Token.";
+      return invalidJWTError;
     }
     if (payload.aud[0] === audienceDEPRECATED) {
-      return "Please generate a new token";
+      return deprecatedJWTErrror;
     }
   }
 
   render() {
     return e(
-      Wizard,
+      SetupWizard,
       {
-        steps: [
-          {
-            description: e("span", null, [
-              "To get started, you'll need to generate an Events API token.",
-              e("br"),
-              e("br"),
-              'Click "Generate an Events API token", sign in to your account on',
-              e("br"),
-              "1Password.com, then follow the onscreen instructions.",
-              e("br"),
-              e("br"),
-              "After you get your token, come back here to enter it.",
-            ]),
-            warning: true,
-            redirect: true,
-          },
-          {
-            description: "Enter the token you got from 1Password.com:",
-          },
-        ],
         handleSubmit: this.handleSubmit,
       },
       null
