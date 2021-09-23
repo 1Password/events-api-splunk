@@ -15,9 +15,34 @@ const e = React.createElement;
 export default class SetupPage extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      indexes: [],
+    };
   }
 
-  handleSubmit = async (authToken) => {
+  async componentDidMount() {
+    const indexes = await Setup.getIndexes(splunkjs);
+    this.setState({
+      indexes,
+    });
+  }
+
+  handleValidate = (authToken) => {
+    const errorMessage = this.validateJWT(authToken);
+    if (typeof errorMessage !== "undefined") {
+      return {
+        error: errorMessage,
+        success: false,
+      };
+    }
+
+    return {
+      error: "",
+      success: true,
+    };
+  };
+
+  handleSubmit = async (authToken, signInOption, itemUsageOption) => {
     const errorMessage = this.validateJWT(authToken);
     if (typeof errorMessage !== "undefined") {
       return {
@@ -36,7 +61,13 @@ export default class SetupPage extends React.Component {
     };
 
     try {
-      await Setup.perform(splunkjs, authToken, options);
+      await Setup.perform(
+        splunkjs,
+        authToken,
+        options,
+        signInOption,
+        itemUsageOption
+      );
     } catch (error) {
       console.log(error);
       return {
@@ -82,6 +113,8 @@ export default class SetupPage extends React.Component {
       SetupWizard,
       {
         handleSubmit: this.handleSubmit,
+        handleValidate: this.handleValidate,
+        indexes: this.state.indexes,
       },
       null
     );
