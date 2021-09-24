@@ -111,7 +111,7 @@ export async function perform(
     splunk_js_sdk_service,
     ITEMUSAAGE_INPUT,
     itemusage_options,
-    true
+    false
   );
 
   // Completes the setup, by access the app.conf's [install]
