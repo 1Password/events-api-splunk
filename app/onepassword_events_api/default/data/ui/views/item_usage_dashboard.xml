@@ -14,8 +14,8 @@
       <fieldForValue>index</fieldForValue>
       <search>
         <query>index=* sourcetype="1password:insights:item_usages" | dedup index | table index</query>
-        <earliest>-24h@h</earliest>
-        <latest>now</latest>
+        <earliest>0</earliest>
+        <latest></latest>
       </search>
     </input>
   </fieldset>
