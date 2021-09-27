@@ -18,6 +18,13 @@
         <latest></latest>
       </search>
     </input>
+    <input type="dropdown" token="top_users_by">
+      <label>Top Users By</label>
+      <default>User UUID</default>
+      <choice value="uuid">User UUID</choice>
+      <choice value="email">User Email</choice>
+      <choice value="name">User Name</choice>
+    </input>
   </fieldset>
   <row>
     <panel>
@@ -89,12 +96,12 @@
       <chart>
         <title>Top Item Users</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:item_usages" | stats count by user.email | sort - count</query>
+          <query>index=$index$ sourcetype="1password:insights:item_usages" | stats count by user.$top_users_by$ | sort - count</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
         <option name="charting.axisLabelsX.majorLabelStyle.rotation">90</option>
-        <option name="charting.axisTitleX.text">email</option>
+        <option name="charting.axisTitleX.text">$top_users_by$</option>
         <option name="charting.chart">column</option>
         <option name="charting.drilldown">none</option>
         <option name="refresh.display">progressbar</option>
