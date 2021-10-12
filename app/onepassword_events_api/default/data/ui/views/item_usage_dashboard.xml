@@ -29,7 +29,7 @@
   <row>
     <panel>
       <map>
-        <title>Signin Attempts Map</title>
+        <title>Item Usages Map</title>
         <search>
           <query>index=$index$ sourcetype="1password:insights:item_usages" | iplocation client.ip_address | lookup geo_countries longitude as lon, latitude as lat | stats count by Country | geom geo_countries featureIdField=Country</query>
           <earliest>$field1.earliest$</earliest>
@@ -82,8 +82,22 @@
         <title>Types</title>
         <search>
           <query>index=$index$ sourcetype="1password:insights:item_usages" | stats count by client.os_name</query>
-          <earliest>-24h@h</earliest>
-          <latest>now</latest>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Item Usage Actions</title>
+      <chart>
+        <title>Actions</title>
+        <search>
+          <query>index=$index$ sourcetype="1password:insights:item_usages" | stats count by action</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">none</option>
