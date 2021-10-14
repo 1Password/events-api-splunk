@@ -42,6 +42,7 @@
         <option name="mapping.map.center">(55.97,-40.69)</option>
         <option name="mapping.map.zoom">3</option>
         <option name="mapping.type">choropleth</option>
+        <option name="refresh.display">progressbar</option>
       </map>
     </panel>
   </row>
