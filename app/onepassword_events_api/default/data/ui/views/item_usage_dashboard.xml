@@ -42,7 +42,6 @@
         <option name="mapping.map.center">(55.97,-40.69)</option>
         <option name="mapping.map.zoom">3</option>
         <option name="mapping.type">choropleth</option>
-        <option name="refresh.display">progressbar</option>
       </map>
     </panel>
   </row>
@@ -54,6 +53,19 @@
           <query>index=$index$ sourcetype="1password:insights:item_usages" | timechart count by client.app_name</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Item Usages by Actions</title>
+        <search>
+          <query>index=$index$ sourcetype="1password:insights:item_usages" | timechart  count by action</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>>
         </search>
         <option name="charting.chart">line</option>
         <option name="charting.drilldown">none</option>
