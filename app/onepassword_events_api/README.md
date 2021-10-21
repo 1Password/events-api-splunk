@@ -20,9 +20,9 @@ the scripted inputs (included in `onepassword_events_api/bin/`) will be triggere
 
 ## Setup
 
-If you wish to change the index this add-on will log to, you may want to create new 1Password specific indexes. See more detailed instructions on our [support page](https://support.1password.com/events-reporting-splunk/#step-3-set-up-the-1password-events-api-add-on).
-
 Click on the 1Password Application in the Apps navigation pane and follow the setup instructions. Once complete, you will be navigated to Search. Start seeing what data has already been ingested by filtering by the event source type, such as `index=* sourcetype="1password:insights:signin_attempts"` or `index=* sourcetype="1password:insights:item_usages"`. If you don't see any events, try increasing the length of time to "All time".
+
+For more detailed setup instructions, check out our [support page](https://support.1password.com/events-reporting-splunk).
 
 ## Debugging
 
