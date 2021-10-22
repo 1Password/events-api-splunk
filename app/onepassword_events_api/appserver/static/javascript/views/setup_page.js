@@ -28,9 +28,14 @@ export const onepassword_name_space = {
 
 export async function getIndexes(splunk_js_sdk) {
   // Create the Splunk JS SDK Service object
+  // Use a wildcard namespace to get all the indexes
   const splunk_js_sdk_service = Config.create_splunk_js_sdk_service(
     splunk_js_sdk,
-    onepassword_name_space
+    {
+      owner: "-",
+      app: "-",
+      sharing: "app",
+    }
   );
 
   const indexes = await Config.get_indexes(splunk_js_sdk_service);
