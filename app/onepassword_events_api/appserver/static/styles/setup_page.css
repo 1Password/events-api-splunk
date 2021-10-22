@@ -131,19 +131,35 @@ a:hover {
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.controls .next {
+.controls .finish {
   background: #157901;
   color: #ffffff;
   margin-left: 1em;
 }
 
-.controls .next:active {
+.controls .finish:active {
   background: #0f5501;
   color: #ffffff;
 }
 
-.controls .next:hover {
+.controls .finish:hover {
   background: #136d01;
+  color: #ffffff;
+}
+
+.controls .next {
+  background: #0572ec;
+  color: #ffffff;
+  margin-left: 1em;
+}
+
+.controls .next:active {
+  background: #0450a6;
+  color: #ffffff;
+}
+
+.controls .next:hover {
+  background: #0567d5;
   color: #ffffff;
 }
 
@@ -159,34 +175,6 @@ a:hover {
   border-radius: 0.5em;
   padding: 1em;
   font-size: 1.2em;
-}
-
-.token button {
-  height: 2em;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  border-radius: 0.5em;
-  font-size: 1.2em;
-  line-height: 130%;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: #0572ec;
-  color: #ffffff;
-  margin-left: 1em;
-  padding: 0 0.5em;
-}
-
-.token .submit:active {
-  background: #0450a6;
-  color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: none;
-}
-
-.token .submit:hover {
-  background: #0567d5;
-  color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: none;
 }
 
 .error {
@@ -217,6 +205,28 @@ a:hover {
 .success a {
   color: #262626;
   text-decoration: underline;
+}
+
+.indexes {
+  font-size: 1.3em;
+}
+
+.index {
+  display: flex;
+  align-items: baseline;
+  gap: 1em;
+}
+
+.index .title {
+  width: 10em;
+}
+
+.index select {
+  border-radius: 5px;
+}
+
+.switch {
+  width: 25px;
 }
 
 .btn {

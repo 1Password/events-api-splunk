@@ -27,7 +27,7 @@ const setupXMLCSSHash = {
 };
 
 const wizardVersion = {
-  files: "./appserver/static/javascript/setup_page.js",
+  files: "./appserver/static/javascript/views/setup_page.js",
   from: /export const VERSION \= ".*";/,
   to: `export const VERSION = "${package.version}";`,
 };

@@ -130,19 +130,35 @@ a:hover {
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.controls .next {
+.controls .finish {
   background: #157901;
   color: #ffffff;
   margin-left: 1em;
 }
 
-.controls .next:active {
+.controls .finish:active {
   background: #0f5501;
   color: #ffffff;
 }
 
-.controls .next:hover {
+.controls .finish:hover {
   background: #136d01;
+  color: #ffffff;
+}
+
+.controls .next {
+  background: #0572ec;
+  color: #ffffff;
+  margin-left: 1em;
+}
+
+.controls .next:active {
+  background: #0450a6;
+  color: #ffffff;
+}
+
+.controls .next:hover {
+  background: #0567d5;
   color: #ffffff;
 }
 
@@ -158,34 +174,6 @@ a:hover {
   border-radius: 0.5em;
   padding: 1em;
   font-size: 1.2em;
-}
-
-.token button {
-  height: 2em;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  border-radius: 0.5em;
-  font-size: 1.2em;
-  line-height: 130%;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: #0572ec;
-  color: #ffffff;
-  margin-left: 1em;
-  padding: 0 0.5em;
-}
-
-.token .submit:active {
-  background: #0450a6;
-  color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: none;
-}
-
-.token .submit:hover {
-  background: #0567d5;
-  color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: none;
 }
 
 .error {
@@ -218,6 +206,28 @@ a:hover {
   text-decoration: underline;
 }
 
+.indexes {
+  font-size: 1.3em;
+}
+
+.index {
+  display: flex;
+  align-items: baseline;
+  gap: 1em;
+}
+
+.index .title {
+  width: 10em;
+}
+
+.index select {
+  border-radius: 5px;
+}
+
+.switch {
+  width: 25px;
+}
+
 .btn {
   box-shadow: none !important;
 }
@@ -232,5 +242,76 @@ a:hover {
 .btn[disabled]:hover {
   border: none !important;
   box-shadow: none !important;
+}
+
+.switch {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.switch input {
+  opacity: 0;
+  position: absolute;
+}
+
+.switch input:checked + span {
+  box-shadow: inset 0 0 0 0.73em #1a8cff;
+}
+
+.switch input:checked + span::after {
+  left: 0.95em;
+}
+
+.switch.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.switch input + span {
+  position: relative;
+  display: inline-block;
+  width: 2.2em;
+  height: 1.3em;
+  background: white;
+  box-shadow: inset 0 0 0 0.0625em #e9e9e9;
+  border-radius: 0.65em;
+  vertical-align: -0.15em;
+  transition: all 0.4s cubic-bezier(0.17, 0.67, 0.43, 0.98);
+}
+
+.switch input + span::after {
+  position: absolute;
+  display: block;
+  content: "";
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 0.65em;
+  top: 0.05em;
+  left: 0.05em;
+  background: white;
+  box-shadow: inset 0 0 0 0.03em rgba(0, 0, 0, 0.1),
+    0 0 0.05em rgba(0, 0, 0, 0.05), 0 0.1em 0.2em rgba(0, 0, 0, 0.2);
+  transition: all 0.25s ease-out;
+}
+
+.switch:active input + span,
+.switch input + span:active {
+  box-shadow: inset 0 0 0 0.73em #e9e9e9;
+}
+
+.switch:active input + span,
+.switch input + span:active::after {
+  width: 1.15em;
+}
+
+.switch:active input:checked + span::after,
+.switch input:checked + span:active::after {
+  left: 0.4375em;
 }
 
