@@ -1,6 +1,6 @@
 {
     "name": "onepassword_events_api",
-    "version": "1.7.0",
+    "version": "1.7.1",
     "description": "This application includes a scripted input to ingest data into Splunk from the Events Reporting API. After completing setup you will be able to monitor and alert on important 1Password event data.",
     "main": "appserver/static/javascripts/setup_page.js",
     "directories": {
