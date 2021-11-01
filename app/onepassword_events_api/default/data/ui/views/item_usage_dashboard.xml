@@ -8,16 +8,6 @@
         <latest>now</latest>
       </default>
     </input>
-    <input type="dropdown" token="index">
-      <label>Index</label>
-      <fieldForLabel>index</fieldForLabel>
-      <fieldForValue>index</fieldForValue>
-      <search>
-        <query>index=* sourcetype="1password:insights:item_usages" | dedup index | table index</query>
-        <earliest>0</earliest>
-        <latest></latest>
-      </search>
-    </input>
     <input type="dropdown" token="top_users_by">
       <label>Top Users By</label>
       <default>User UUID</default>
@@ -29,9 +19,9 @@
   <row>
     <panel>
       <map>
-        <title>Signin Attempts Map</title>
+        <title>Item Usages Map</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:item_usages" | iplocation client.ip_address | lookup geo_countries longitude as lon, latitude as lat | stats count by Country | geom geo_countries featureIdField=Country</query>
+          <query>`1password_index` sourcetype="1password:insights:item_usages" | iplocation client.ip_address | lookup geo_countries longitude as lon, latitude as lat | stats count by Country | geom geo_countries featureIdField=Country</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
@@ -51,7 +41,7 @@
       <chart>
         <title>Item Usages by App Name</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:item_usages" | timechart count by client.app_name</query>
+          <query>`1password_index` sourcetype="1password:insights:item_usages" | timechart count by client.app_name</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
@@ -67,7 +57,7 @@
       <chart>
         <title>Categories</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:item_usages" | stats count by client.app_name</query>
+          <query>`1password_index` sourcetype="1password:insights:item_usages" | stats count by client.app_name</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
@@ -81,9 +71,9 @@
       <chart>
         <title>Types</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:item_usages" | stats count by client.os_name</query>
-          <earliest>-24h@h</earliest>
-          <latest>now</latest>
+          <query>`1password_index` sourcetype="1password:insights:item_usages" | stats count by client.os_name</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">none</option>
@@ -96,7 +86,7 @@
       <chart>
         <title>Top Item Users</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:item_usages" | stats count by user.$top_users_by$ | sort - count</query>
+          <query>`1password_index` sourcetype="1password:insights:item_usages" | stats count by user.$top_users_by$ | sort - count</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>

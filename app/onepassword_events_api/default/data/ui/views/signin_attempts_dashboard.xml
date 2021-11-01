@@ -8,16 +8,6 @@
         <latest>now</latest>
       </default>
     </input>
-    <input type="dropdown" token="index">
-      <label>Index</label>
-      <fieldForLabel>index</fieldForLabel>
-      <fieldForValue>index</fieldForValue>
-      <search>
-        <query>index=* sourcetype="1password:insights:signin_attempts" | dedup index | table index</query>
-        <earliest>0</earliest>
-        <latest></latest>
-      </search>
-    </input>
     <input type="dropdown" token="top_users_by">
       <label>Top Users By</label>
       <default>User UUID</default>
@@ -31,7 +21,7 @@
       <map>
         <title>Signin Attempts Map</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:signin_attempts" | iplocation client.ip_address | lookup geo_countries longitude as lon, latitude as lat | stats count by Country | geom geo_countries featureIdField=Country</query>
+          <query>`1password_index` sourcetype="1password:insights:signin_attempts" | iplocation client.ip_address | lookup geo_countries longitude as lon, latitude as lat | stats count by Country | geom geo_countries featureIdField=Country</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
@@ -51,7 +41,7 @@
       <chart>
         <title>Signin Attempts By Category</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:signin_attempts" | timechart count by category</query>
+          <query>`1password_index` sourcetype="1password:insights:signin_attempts" | timechart count by category</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
@@ -67,7 +57,7 @@
       <chart>
         <title>Categories</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:signin_attempts" | stats count by category</query>
+          <query>`1password_index` sourcetype="1password:insights:signin_attempts" | stats count by category</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
@@ -81,7 +71,7 @@
       <chart>
         <title>Types</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:signin_attempts" | stats count by type</query>
+          <query>`1password_index` sourcetype="1password:insights:signin_attempts" | stats count by type</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
         </search>
@@ -96,7 +86,7 @@
       <chart>
         <title>Top Failed Sign-ins</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:signin_attempts"| spath category | search category!=success |  stats count by target_user.$top_users_by$ | sort - count</query>
+          <query>`1password_index` sourcetype="1password:insights:signin_attempts"| spath category | search category!=success |  stats count by target_user.$top_users_by$ | sort - count</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
@@ -115,7 +105,7 @@
       <chart>
         <title>Top Sign-ins</title>
         <search>
-          <query>index=$index$ sourcetype="1password:insights:signin_attempts"| spath category | search category=success |  stats count by target_user.$top_users_by$ | sort - count</query>
+          <query>`1password_index` sourcetype="1password:insights:signin_attempts"| spath category | search category=success |  stats count by target_user.$top_users_by$ | sort - count</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
