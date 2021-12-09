@@ -16,6 +16,7 @@ type ItemUsage struct {
 	ItemUUID    string          `json:"item_uuid"`
 	User        ItemUsageUser   `json:"user"`
 	Client      ItemUsageClient `json:"client"`
+	Action      string          `json:"action"`
 }
 
 type ItemUsageUser struct {

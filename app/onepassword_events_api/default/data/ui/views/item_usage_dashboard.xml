@@ -50,6 +50,19 @@
         <option name="refresh.display">progressbar</option>
       </chart>
     </panel>
+    <panel>
+      <chart>
+        <title>Item Usages by Actions</title>
+        <search>
+          <query>`1password_item_usages_index` sourcetype="1password:insights:item_usages" | timechart  count by action</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
   </row>
   <row>
     <panel>
@@ -72,6 +85,20 @@
         <title>Types</title>
         <search>
           <query>`1password_item_usages_index` sourcetype="1password:insights:item_usages" | stats count by client.os_name</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Item Usage Actions</title>
+      <chart>
+        <title>Actions</title>
+        <search>
+          <query>`1password_item_usages_index` sourcetype="1password:insights:item_usages" | stats count by action</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
         </search>
