@@ -9,14 +9,15 @@ import (
 )
 
 type ItemUsage struct {
-	UUID        string          `json:"uuid"`
-	Timestamp   FixedFormatTime `json:"timestamp"`
-	UsedVersion uint32          `json:"used_version"`
-	VaultUUID   string          `json:"vault_uuid"`
-	ItemUUID    string          `json:"item_uuid"`
-	User        ItemUsageUser   `json:"user"`
-	Client      ItemUsageClient `json:"client"`
-	Action      string          `json:"action"`
+	UUID        string             `json:"uuid"`
+	Timestamp   FixedFormatTime    `json:"timestamp"`
+	UsedVersion uint32             `json:"used_version"`
+	VaultUUID   string             `json:"vault_uuid"`
+	ItemUUID    string             `json:"item_uuid"`
+	User        ItemUsageUser      `json:"user"`
+	Client      ItemUsageClient    `json:"client"`
+	Location    *ItemUsageLocation `json:"location,omitempty"`
+	Action      string             `json:"action"`
 }
 
 type ItemUsageUser struct {
@@ -33,6 +34,14 @@ type ItemUsageClient struct {
 	OSName          string `json:"os_name"`
 	OSVersion       string `json:"os_version"`
 	IPAddress       string `json:"ip_address"`
+}
+
+type ItemUsageLocation struct {
+	Country   string  `json:"country"`
+	Region    string  `json:"region"`
+	City      string  `json:"city"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
 }
 
 type ItemUsageResponse struct {

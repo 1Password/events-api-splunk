@@ -18,6 +18,7 @@ type SignInAttempt struct {
 	Details     *SignInAttemptDetails   `json:"details"`
 	TargetUser  SignInAttemptTargetUser `json:"target_user"`
 	Client      SignInAttemptClient     `json:"client"`
+	Location    *SignInAttemptLocation  `json:"location,omitempty"`
 }
 
 type SignInAttemptDetails struct {
@@ -36,6 +37,14 @@ type SignInAttemptClient struct {
 	OSName          string `json:"os_name"`
 	OSVersion       string `json:"os_version"`
 	IPAddress       string `json:"ip_address"`
+}
+
+type SignInAttemptLocation struct {
+	Country   string  `json:"country"`
+	Region    string  `json:"region"`
+	City      string  `json:"city"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
 }
 
 type CursorResponse struct {
