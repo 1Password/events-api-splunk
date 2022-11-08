@@ -1,0 +1,104 @@
+<form version="1.1">
+  <label>1Password Audit Events</label>
+  <fieldset submitButton="false" autoRun="false">
+    <input type="time" token="field1">
+      <label>Timeframe</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <map>
+        <title>Audit Events Map</title>
+        <search>
+          <query>`1password_audit_events_index` sourcetype="1password:insights:audit_events" | iplocation session.ip | lookup geo_countries longitude as lon, latitude as lat | stats count by Country | geom geo_countries featureIdField=Country</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="mapping.choroplethLayer.colorBins">5</option>
+        <option name="mapping.choroplethLayer.colorMode">auto</option>
+        <option name="mapping.choroplethLayer.maximumColor">0x53a051</option>
+        <option name="mapping.map.center">(55.97,-40.69)</option>
+        <option name="mapping.map.zoom">3</option>
+        <option name="mapping.type">choropleth</option>
+        <option name="refresh.display">progressbar</option>
+      </map>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Audit Events by Actions</title>
+        <search>
+          <query>`1password_audit_events_index` sourcetype="1password:insights:audit_events" | timechart count by action</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Audit Events by Actors</title>
+        <search>&gt;<query>`1password_audit_events_index` sourcetype="1password:insights:audit_events" | timechart  count by actor_uuid</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Actions</title>
+        <search>
+          <query>`1password_audit_events_index` sourcetype="1password:insights:audit_events" | stats count by action</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Item Usage Actions</title>
+      <chart>
+        <title>Object Types</title>
+        <search>
+          <query>`1password_audit_events_index` sourcetype="1password:insights:audit_events" | stats count by object_type</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Top Audit Event Actors</title>
+        <search>
+          <query>`1password_audit_events_index` sourcetype="1password:insights:audit_events" | stats count by actor_uuid | sort - count</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">90</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+</form>
