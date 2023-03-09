@@ -10,6 +10,8 @@ const SIGNIN_INPUT =
   "script://$SPLUNK_HOME/etc/apps/onepassword_events_api/bin/signin_attempts";
 const ITEMUSAAGE_INPUT =
   "script://$SPLUNK_HOME/etc/apps/onepassword_events_api/bin/item_usages";
+const AUDITEVENTS_INPUT =
+  "script://$SPLUNK_HOME/etc/apps/onepassword_events_api/bin/audit_events";
 
 const CUSTOM_CONF = "events_reporting";
 const CUSTOM_CONF_STANZA = "config";
@@ -17,7 +19,7 @@ const CUSTOM_CONF_STANZA = "config";
 const SECRET_REALM = "events_reporting_realm";
 const SECRET_NAME = "events_api_token";
 
-export const VERSION = "1.9.0";
+export const VERSION = "1.10.0";
 export const HOST = "1password.com";
 
 export const onepassword_name_space = {
@@ -69,7 +71,8 @@ export async function perform(
   authToken,
   setup_options,
   signin_options,
-  itemusage_options
+  itemusage_options,
+  auditevents_options
 ) {
   // Create the Splunk JS SDK Service object
   const splunk_js_sdk_service = Config.create_splunk_js_sdk_service(
@@ -104,6 +107,12 @@ export async function perform(
     splunk_js_sdk_service,
     ITEMUSAAGE_INPUT,
     { disabled: 1 },
+    false
+  );
+  await updateInputs(
+    splunk_js_sdk_service,
+    AUDITEVENTS_INPUT,
+    { disabled: 1 },
     true
   );
   await updateInputs(
@@ -116,6 +125,12 @@ export async function perform(
     splunk_js_sdk_service,
     ITEMUSAAGE_INPUT,
     itemusage_options,
+    false
+  );
+  await updateInputs(
+    splunk_js_sdk_service,
+    AUDITEVENTS_INPUT,
+    auditevents_options,
     false
   );
 

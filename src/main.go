@@ -90,5 +90,8 @@ func main() {
 	} else if jwt.Features.Contains(utils.ItemUsageFeatureScope) && EventBuildType == utils.ItemUsageFeatureScope {
 		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.ItemUsageCursorFile)
 		actions.StartItemUsages(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
+	} else if jwt.Features.Contains(utils.AuditEventsFeatureScope) && EventBuildType == utils.AuditEventsFeatureScope {
+		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.AuditEventsCursorFile)
+		actions.StartAuditEvents(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
 	}
 }

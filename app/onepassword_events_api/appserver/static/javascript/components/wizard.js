@@ -8,8 +8,16 @@ export const SetupWizard = (props) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [result, setResult] = useState({ success: false, error: "" });
   const [authToken, setAuthToken] = useState("");
-  const [index, setIndex] = useState({ signIn: "main", itemUsage: "main" });
-  const [enabled, setEnabled] = useState({ signIn: true, itemUsage: true });
+  const [index, setIndex] = useState({
+    signIn: "main",
+    itemUsage: "main",
+    auditEvents: "main",
+  });
+  const [enabled, setEnabled] = useState({
+    signIn: true,
+    itemUsage: true,
+    auditEvents: true,
+  });
   const [loading, setLoading] = useState(false);
 
   const handleNext = () => {
@@ -34,10 +42,15 @@ export const SetupWizard = (props) => {
       index: index.itemUsage,
       disabled: enabled.itemUsage ? 0 : 1,
     };
+    const auditEventsOptions = {
+      index: index.auditEvents,
+      disabled: enabled.auditEvents ? 0 : 1,
+    };
     const result = await props.handleSubmit(
       authToken,
       signInOptions,
-      itemUsageOptions
+      itemUsageOptions,
+      auditEventsOptions
     );
     setLoading(false);
     setResult(result);
@@ -157,6 +170,33 @@ export const SetupWizard = (props) => {
               disabled: !enabled.itemUsage,
               onChange: (e) =>
                 setIndex({ ...index, itemUsage: e.target.value }),
+            },
+            [
+              props.indexes.map((i) => {
+                return e("option", { value: i.name }, i.name);
+              }),
+            ]
+          ),
+        ]),
+        e("div", { className: "index" }, [
+          e("label", { className: "switch" }, [
+            e("input", {
+              type: "checkbox",
+              checked: enabled.auditEvents,
+              onChange: (e) =>
+                setEnabled({ ...enabled, auditEvents: e.target.checked }),
+            }),
+            e("span"),
+          ]),
+          e("div", { className: "title" }, "Audit Events"),
+          e(
+            "select",
+            {
+              id: "index",
+              value: index.auditEvents,
+              disabled: !enabled.auditEvents,
+              onChange: (e) =>
+                setIndex({ ...index, auditEvents: e.target.value }),
             },
             [
               props.indexes.map((i) => {

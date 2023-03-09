@@ -1,12 +1,14 @@
 # Run make new_version after changing this version
-VERSION=1.9.0
+VERSION=1.10.0
 
 .PHONY: compile_app_binary
 compile_app_binary:
 	@cd src && env GOOS=linux GOARCH=amd64 go build -ldflags "-X main.EventBuildType=signinattempts -X go.1password.io/eventsapi-splunk/api.Version=$(VERSION)" -o ../app/onepassword_events_api/bin/signin_attempts
 	@cd src && env GOOS=linux GOARCH=amd64 go build -ldflags "-X main.EventBuildType=itemusages -X go.1password.io/eventsapi-splunk/api.Version=$(VERSION)" -o ../app/onepassword_events_api/bin/item_usages
+	@cd src && env GOOS=linux GOARCH=amd64 go build -ldflags "-X main.EventBuildType=auditevents -X go.1password.io/eventsapi-splunk/api.Version=$(VERSION)" -o ../app/onepassword_events_api/bin/audit_events
 	@cp -R src app/onepassword_events_api/lib/item_usages
 	@cp -R src app/onepassword_events_api/lib/signin_attempts
+	@cp -R src app/onepassword_events_api/lib/audit_events
 
 .PHONY: clean
 clean:

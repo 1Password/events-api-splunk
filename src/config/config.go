@@ -13,12 +13,13 @@ import (
 )
 
 type Config struct {
-	Url                 string
-	AuthToken           string
-	StartAt             time.Time
-	Limit               int
-	SignInCursorFile    string
-	ItemUsageCursorFile string
+	Url                   string
+	AuthToken             string
+	StartAt               time.Time
+	Limit                 int
+	SignInCursorFile      string
+	ItemUsageCursorFile   string
+	AuditEventsCursorFile string
 }
 
 type SplunkEnv struct {

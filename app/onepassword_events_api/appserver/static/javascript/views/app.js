@@ -42,7 +42,12 @@ export default class SetupPage extends React.Component {
     };
   };
 
-  handleSubmit = async (authToken, signInOption, itemUsageOption) => {
+  handleSubmit = async (
+    authToken,
+    signInOption,
+    itemUsageOption,
+    auditEventsOption
+  ) => {
     const errorMessage = this.validateJWT(authToken);
     if (typeof errorMessage !== "undefined") {
       return {
@@ -58,6 +63,8 @@ export default class SetupPage extends React.Component {
         '"/etc/apps/onepassword_events_api/local/signin_cursor_store"',
       itemUsageCursorFile:
         '"/etc/apps/onepassword_events_api/local/itemusage_cursor_store"',
+      auditEventsCursorFile:
+        '"/etc/apps/onepassword_events_api/local/auditevents_cursor_store"',
     };
 
     try {
@@ -66,7 +73,8 @@ export default class SetupPage extends React.Component {
         authToken,
         options,
         signInOption,
-        itemUsageOption
+        itemUsageOption,
+        auditEventsOption
       );
     } catch (error) {
       console.log(error);
