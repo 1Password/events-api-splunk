@@ -1,5 +1,5 @@
 # Run make new_version after changing this version
-VERSION=1.10.0
+VERSION=1.10.1
 
 .PHONY: compile_app_binary
 compile_app_binary:
@@ -19,14 +19,17 @@ build_all_binaries:
 	@cd app/onepassword_events_api && npm run build-release
 	@cd src && gox -arch="amd64 arm" -os="linux windows freebsd openbsd" -osarch="darwin/amd64" -output="../builds/bin/{{.OS}}_{{.Arch}}/onepassword_events_api/bin/signin_attempts" -ldflags '-s -X main.EventBuildType=signinattempts -X go.1password.io/eventsapi-splunk/api.Version=$(VERSION)' .
 	@cd src && gox -arch="amd64 arm" -os="linux windows freebsd openbsd" -osarch="darwin/amd64" -output="../builds/bin/{{.OS}}_{{.Arch}}/onepassword_events_api/bin/item_usages" -ldflags '-s -X main.EventBuildType=itemusages -X go.1password.io/eventsapi-splunk/api.Version=$(VERSION)' .
+	@cd src && gox -arch="amd64 arm" -os="linux windows freebsd openbsd" -osarch="darwin/amd64" -output="../builds/bin/{{.OS}}_{{.Arch}}/onepassword_events_api/bin/audit_events" -ldflags '-s -X main.EventBuildType=auditevents -X go.1password.io/eventsapi-splunk/api.Version=$(VERSION)' .
 
 .PHONY: build_all_apps
 build_all_apps: clean
 	@cp -R src app/onepassword_events_api/lib/item_usages
 	@cp -R src app/onepassword_events_api/lib/signin_attempts
+	@cp -R src app/onepassword_events_api/lib/audit_events
 	@cd builds/bin && for d in */; do cp -a ../../app/onepassword_events_api $${d}; done
 	@sed -i'.bak' 's#bin/signin_attempts#bin/signin_attempts.exe#g' builds/bin/windows_amd64/onepassword_events_api/default/inputs.conf
 	@sed -i'.bak' 's#bin/item_usages#bin/item_usages.exe#g' builds/bin/windows_amd64/onepassword_events_api/default/inputs.conf
+	@sed -i'.bak' 's#bin/audit_events#bin/audit_events.exe#g' builds/bin/windows_amd64/onepassword_events_api/default/inputs.conf
 	@rm -f builds/bin/windows_amd64/onepassword_events_api/default/inputs.conf.bak
 	@cd builds/bin && for d in */; do \
 		cd $${d}; \
