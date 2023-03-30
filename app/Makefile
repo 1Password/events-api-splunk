@@ -66,5 +66,7 @@ clean:
 	$(RM) -rf onepassword_events_api/lib/item_usages
 	$(RM) onepassword_events_api/bin/signin_attempts
 	$(RM) -rf onepassword_events_api/lib/signin_attempts
+	$(RM) onepassword_events_api/bin/audit_events
+	$(RM) -rf onepassword_events_api/lib/audit_events
 	$(RM) splunkd.log
 	@touch splunkd.log
