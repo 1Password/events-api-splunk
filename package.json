@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "replace-in-file": "^7.0.1",
+    "webpack-cli": "^5.1.4"
+  }
+}
