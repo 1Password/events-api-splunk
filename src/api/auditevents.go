@@ -10,18 +10,27 @@ import (
 )
 
 type AuditEvent struct {
-	UUID       string    `json:"uuid"`
-	Timestamp  time.Time `json:"timestamp"`
-	ActorUUID  string    `json:"actor_uuid"`
-	Action     string    `json:"action"`
-	ObjectType string    `json:"object_type"`
-	ObjectUUID string    `json:"object_uuid"`
-	AuxID      int64     `json:"aux_id,omitempty"`
-	AuxUUID    string    `json:"aux_uuid,omitempty"`
-	AuxInfo    string    `json:"aux_info,omitempty"`
+	UUID          string                     `json:"uuid"`
+	Timestamp     time.Time                  `json:"timestamp"`
+	ActorUUID     string                     `json:"actor_uuid"`
+	ActorDetails  *AuditEventResourceDetails `json:"actor_details,omitempty"`
+	Action        string                     `json:"action"`
+	ObjectType    string                     `json:"object_type"`
+	ObjectUUID    string                     `json:"object_uuid"`
+	ObjectDetails *AuditEventResourceDetails `json:"object_details,omitempty"`
+	AuxID         int64                      `json:"aux_id,omitempty"`
+	AuxUUID       string                     `json:"aux_uuid,omitempty"`
+	AuxDetails    *AuditEventResourceDetails `json:"aux_details,omitempty"`
+	AuxInfo       string                     `json:"aux_info,omitempty"`
 
 	Session  AuditEventSession   `json:"session"`
 	Location *AuditEventLocation `json:"location,omitempty"`
+}
+
+type AuditEventResourceDetails struct {
+	UUID  string `json:"uuid,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Email string `json:"email,omitempty"`
 }
 
 type AuditEventSession struct {
