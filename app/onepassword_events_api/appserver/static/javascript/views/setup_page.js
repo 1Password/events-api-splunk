@@ -19,7 +19,7 @@ const CUSTOM_CONF_STANZA = "config";
 const SECRET_REALM = "events_reporting_realm";
 const SECRET_NAME = "events_api_token";
 
-export const VERSION = "1.12.0";
+export const VERSION = "1.13.0";
 export const HOST = "1password.com";
 
 export const onepassword_name_space = {
