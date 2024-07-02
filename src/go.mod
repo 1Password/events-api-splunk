@@ -1,13 +1,17 @@
 module go.1password.io/eventsapi-splunk
 
-go 1.15
+go 1.21
+
+toolchain go1.21.8
 
 require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/dimchansky/utfbom v1.1.1
-	github.com/google/go-cmp v0.5.6 // indirect
-	github.com/hashicorp/go-retryablehttp v0.7.0
-	github.com/stretchr/testify v1.7.0 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
-	gopkg.in/square/go-jose.v2 v2.6.0
+	github.com/go-jose/go-jose/v4 v4.0.2
+	github.com/hashicorp/go-retryablehttp v0.7.7
+)
+
+require (
+	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
+	golang.org/x/crypto v0.19.0 // indirect
 )
