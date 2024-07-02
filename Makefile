@@ -1,5 +1,5 @@
 # Run make new_version after changing this version
-VERSION=1.14.0
+VERSION=1.14.1
 
 .PHONY: compile_app_binary
 compile_app_binary:
@@ -33,7 +33,7 @@ build_all_apps: clean
 	@rm -f builds/bin/windows_amd64/onepassword_events_api/default/inputs.conf.bak
 	@cd builds/bin && for d in */; do \
 		cd $${d}; \
-		COPYFILE_DISABLE=1 tar --exclude='.DS_Store' --exclude='.gitignore' --exclude='.travis.yml' --exclude='.gitcookies.sh.enc' --exclude="node_modules" --exclude="package.json" --exclude="package-lock.json" --exclude="webpack.config.js" -cvzf onepassword_events_api_$(VERSION).tar.gz onepassword_events_api; \
+		COPYFILE_DISABLE=1 tar --exclude='.DS_Store' --exclude='.gitignore' --exclude='.travis.yml' --exclude='.gitcookies.sh.enc' --exclude="node_modules" --exclude="vendor" --exclude="package.json" --exclude="package-lock.json" --exclude="webpack.config.js" -cvzf onepassword_events_api_$(VERSION).tar.gz onepassword_events_api; \
 		cd ..; \
 	done
 	@cd builds/bin && for d in */; do rm -rf $${d}onepassword_events_api; done
