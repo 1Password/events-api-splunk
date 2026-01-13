@@ -10,12 +10,10 @@ import (
 func GetEventsToken(ctx context.Context, splunkAPI *splunk.SplunkAPI) (string, error) {
 	splunkRes, err := splunkAPI.GetPasswords(ctx, "events_api_token", "events_reporting_realm")
 	if err != nil {
-		err := fmt.Errorf("GetEventsToken call to splunk failed: %w", err)
-		return "", err
+		return "", fmt.Errorf("GetEventsToken call to splunk failed: %w", err)
 	}
 	if len(splunkRes.Entry.Content.Dict.Key) == 0 {
-		err := fmt.Errorf("splunk response is missing credentials")
-		return "", err
+		return "", fmt.Errorf("splunk response is missing credentials")
 	}
 
 	return splunkRes.Entry.Content.Dict.Key[0].Text, nil
@@ -24,8 +22,7 @@ func GetEventsToken(ctx context.Context, splunkAPI *splunk.SplunkAPI) (string, e
 func CreateEventsToken(ctx context.Context, splunkAPI *splunk.SplunkAPI, authToken string) error {
 	err := splunkAPI.CreatePassword(ctx, "events_api_token", authToken, "events_reporting_realm")
 	if err != nil {
-		err := fmt.Errorf("CreateEventsToken call to splunk failed: %w", err)
-		return err
+		return fmt.Errorf("CreateEventsToken call to splunk failed: %w", err)
 	}
 	return nil
 }

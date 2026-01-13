@@ -40,22 +40,19 @@ func (e *EventsAPI) request(ctx context.Context, method string, route string, bo
 	if body != nil {
 		reqBody, err := json.Marshal(body)
 		if err != nil {
-			err := fmt.Errorf("could not marshal request: %w", err)
-			panic(err)
+			return nil, fmt.Errorf("could not marshal request: %w", err)
 		}
 		b = bytes.NewReader(reqBody)
 	}
 	req, err := http.NewRequestWithContext(ctx, method, e.BaseUrl+route, b)
 	if err != nil {
-		err := fmt.Errorf("could not create new request: %w", err)
-		return nil, err
+		return nil, fmt.Errorf("could not create new request: %w", err)
 	}
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", e.AuthToken))
 	req.Header.Add("User-Agent", DefaultUserAgent)
 	res, err := e.client.Do(req)
 	if err != nil {
-		err := fmt.Errorf("could not make request: %w", err)
-		return nil, err
+		return nil, fmt.Errorf("could not make request: %w", err)
 	}
 	return res, nil
 }

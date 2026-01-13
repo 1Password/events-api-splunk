@@ -91,21 +91,18 @@ func (s *SplunkAPI) GetPasswords(ctx context.Context, passwordKey, passwordRealm
 	url := fmt.Sprintf("/servicesNS/nobody/onepassword_events_api/storage/passwords/%s:%s:", passwordRealm, passwordKey)
 	res, err := s.request(ctx, "GET", url, nil)
 	if err != nil {
-		err := fmt.Errorf("could not make SplunkAPIRequest: %w", err)
-		return nil, err
+		return nil, fmt.Errorf("could not make SplunkAPIRequest: %w", err)
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		err := fmt.Errorf("received a non 200 response: %d", res.StatusCode)
-		return nil, err
+		return nil, fmt.Errorf("received a non 200 response: %d", res.StatusCode)
 	}
 
 	passwordsResponse := &PasswordsResponse{}
 	decoder := xml.NewDecoder(res.Body)
 	err = decoder.Decode(passwordsResponse)
 	if err != nil {
-		err := fmt.Errorf("could not decode response: %w", err)
-		return nil, err
+		return nil, fmt.Errorf("could not decode response: %w", err)
 	}
 
 	return passwordsResponse, nil
@@ -119,16 +116,14 @@ func (s *SplunkAPI) CreatePassword(ctx context.Context, name, password, realm st
 	data.Set("realm", realm)
 	res, err := s.request(ctx, "POST", endpoint, data)
 	if err != nil {
-		err := fmt.Errorf("could not make SplunkAPIRequest: %w", err)
-		return err
+		return fmt.Errorf("could not make SplunkAPIRequest: %w", err)
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusConflict {
 		// A StatusConflict 409 if the password was already created
 		b, _ := io.ReadAll(res.Body)
 		log.Println(string(b))
-		err := fmt.Errorf("received a non 201 response: %d", res.StatusCode)
-		return err
+		return fmt.Errorf("received a non 201 response: %d", res.StatusCode)
 	}
 
 	return nil

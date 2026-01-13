@@ -57,8 +57,7 @@ func (s *AuditEventsResponse) PrintEvents() error {
 	for i, v := range s.AuditEvents {
 		raw, err := json.Marshal(v)
 		if err != nil {
-			err := fmt.Errorf("could not marshal event: %d, error: %s", i, err)
-			return err
+			return fmt.Errorf("could not marshal event: %d, error: %s", i, err)
 		}
 		fmt.Println(string(raw))
 	}
@@ -68,26 +67,22 @@ func (s *AuditEventsResponse) PrintEvents() error {
 func (e *EventsAPI) AuditEventsRequest(ctx context.Context, body interface{}) (*AuditEventsResponse, error) {
 	res, err := e.request(ctx, "POST", "/api/v1/auditevents", body)
 	if err != nil {
-		err := fmt.Errorf("could not make EventAPIRequest: %w", err)
-		return nil, err
+		return nil, fmt.Errorf("could not make EventAPIRequest: %w", err)
 	}
 	resBody, err := io.ReadAll(res.Body)
 	if err != nil {
-		err := fmt.Errorf("could not read response: %w", err)
-		return nil, err
+		return nil, fmt.Errorf("could not read response: %w", err)
 	}
 	res.Body.Close()
 
 	auditEventsRes := &AuditEventsResponse{}
 	err = json.Unmarshal(resBody, auditEventsRes)
 	if err != nil {
-		err := fmt.Errorf("could not unmarshal response: %s", string(resBody))
-		return nil, err
+		return nil, fmt.Errorf("could not unmarshal response: %s", string(resBody))
 	}
 
 	if res.StatusCode != http.StatusOK {
-		err := fmt.Errorf("received a non 200 response: %v", string(resBody))
-		return nil, err
+		return nil, fmt.Errorf("received a non 200 response: %v", string(resBody))
 	}
 
 	return auditEventsRes, nil

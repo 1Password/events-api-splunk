@@ -18,29 +18,32 @@ import (
 var EventBuildType string // Injected at build time so we can make multiple apps
 
 func main() {
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
 	log.Println("Booting...")
 	if EventBuildType == "" {
-		err := fmt.Errorf("missing EventBuildType flag")
-		panic(err)
+		return fmt.Errorf("missing EventBuildType flag")
 	}
 
 	splunkHome := os.Getenv("SPLUNK_HOME")
 	if splunkHome == "" {
-		err := fmt.Errorf("SPLUNK_HOME environment variable must be set")
-		panic(err)
+		return fmt.Errorf("SPLUNK_HOME environment variable must be set")
 	}
 
 	splunkEnv, err := config.NewSplunkEnv(splunkHome)
 	if err != nil {
-		err := fmt.Errorf("could not create new splunk env: %w", err)
-		panic(err)
+		return fmt.Errorf("could not create new splunk env: %w", err)
 	}
 
 	reader := bufio.NewReader(os.Stdin)
 	splunkSession, _, err := reader.ReadLine()
 	if err != nil {
-		err := fmt.Errorf("could not read session: %w", err)
-		panic(err)
+		return fmt.Errorf("could not read session: %w", err)
 	}
 
 	splunkAPI := splunk.NewSplunkAPI(string(splunkSession))
@@ -52,27 +55,23 @@ func main() {
 		eventsToken = splunkEnv.Config.AuthToken
 		err := actions.CreateEventsToken(context.TODO(), splunkAPI, eventsToken)
 		if err != nil {
-			err := fmt.Errorf("could not backup token: %w", err)
-			panic(err)
+			return fmt.Errorf("could not backup token: %w", err)
 		}
 		splunkEnv.Config.AuthToken = "" // Remove token on disk
 		err = splunkEnv.UpdateConfig(splunkEnv.Config)
 		if err != nil {
-			err := fmt.Errorf("could not remove auth token: %w", err)
-			panic(err)
+			return fmt.Errorf("could not remove auth token: %w", err)
 		}
 	} else {
 		eventsToken, err = actions.GetEventsToken(context.TODO(), splunkAPI)
 		if err != nil {
-			err := fmt.Errorf("could not get token: %w", err)
-			panic(err)
+			return fmt.Errorf("could not get token: %w", err)
 		}
 	}
 
 	jwt, err := utils.ParseJWTClaims(eventsToken)
 	if err != nil {
-		err := fmt.Errorf("could not parse jwt: %w", err)
-		panic(err)
+		return fmt.Errorf("could not parse jwt: %w", err)
 	}
 
 	url, err := jwt.GetEventsURL()
@@ -84,14 +83,16 @@ func main() {
 
 	eventsAPI := events.NewEventsAPI(eventsToken, url)
 
-	if jwt.Features.Contains(utils.SignInAttemptsFeatureScope) && EventBuildType == utils.SignInAttemptsFeatureScope {
+	switch {
+	case jwt.Features.Contains(utils.SignInAttemptsFeatureScope) && EventBuildType == utils.SignInAttemptsFeatureScope:
 		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.SignInCursorFile)
-		actions.StartSignIns(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
-	} else if jwt.Features.Contains(utils.ItemUsageFeatureScope) && EventBuildType == utils.ItemUsageFeatureScope {
+		return actions.StartSignIns(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
+	case jwt.Features.Contains(utils.ItemUsageFeatureScope) && EventBuildType == utils.ItemUsageFeatureScope:
 		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.ItemUsageCursorFile)
-		actions.StartItemUsages(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
-	} else if jwt.Features.Contains(utils.AuditEventsFeatureScope) && EventBuildType == utils.AuditEventsFeatureScope {
+		return actions.StartItemUsages(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
+	case jwt.Features.Contains(utils.AuditEventsFeatureScope) && EventBuildType == utils.AuditEventsFeatureScope:
 		cursorFile := path.Join(splunkEnv.Home, splunkEnv.Config.AuditEventsCursorFile)
-		actions.StartAuditEvents(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
+		return actions.StartAuditEvents(cursorFile, splunkEnv.Config.Limit, &splunkEnv.Config.StartAt, eventsAPI)
 	}
+	return fmt.Errorf("JWT features do not match build type")
 }

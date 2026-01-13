@@ -61,8 +61,7 @@ func (s *SignInAttemptResponse) PrintEvents() error {
 	for i, v := range s.Items {
 		raw, err := json.Marshal(v)
 		if err != nil {
-			err := fmt.Errorf("could not marshal event: %d, error: %s", i, err)
-			return err
+			return fmt.Errorf("could not marshal event: %d, error: %s", i, err)
 		}
 		fmt.Println(string(raw))
 	}
@@ -72,26 +71,22 @@ func (s *SignInAttemptResponse) PrintEvents() error {
 func (e *EventsAPI) SignInAttemptsRequest(ctx context.Context, body interface{}) (*SignInAttemptResponse, error) {
 	res, err := e.request(ctx, "POST", "/api/v1/signinattempts", body)
 	if err != nil {
-		err := fmt.Errorf("could not make EventAPIRequest: %w", err)
-		return nil, err
+		return nil, fmt.Errorf("could not make EventAPIRequest: %w", err)
 	}
 	resBody, err := io.ReadAll(res.Body)
 	if err != nil {
-		err := fmt.Errorf("could not read response: %w", err)
-		return nil, err
+		return nil, fmt.Errorf("could not read response: %w", err)
 	}
 	res.Body.Close()
 
 	attemptsRes := &SignInAttemptResponse{}
 	err = json.Unmarshal(resBody, attemptsRes)
 	if err != nil {
-		err := fmt.Errorf("could not unmarshal response: %s", string(resBody))
-		return nil, err
+		return nil, fmt.Errorf("could not unmarshal response: %s", string(resBody))
 	}
 
 	if res.StatusCode != http.StatusOK {
-		err := fmt.Errorf("received a non 200 response: %v", string(resBody))
-		return nil, err
+		return nil, fmt.Errorf("received a non 200 response: %v", string(resBody))
 	}
 
 	return attemptsRes, nil

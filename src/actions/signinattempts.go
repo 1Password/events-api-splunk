@@ -13,20 +13,18 @@ import (
 	"go.1password.io/eventsapi-splunk/store"
 )
 
-func StartSignIns(cursorFile string, limit int, startAt *time.Time, eventsAPI *api.EventsAPI) {
+func StartSignIns(cursorFile string, limit int, startAt *time.Time, eventsAPI *api.EventsAPI) error {
 	log.Println("Starting Signins...")
 
 	store, err := store.OpenStore(cursorFile)
 	defer store.CloseStore()
 	if err != nil {
-		err := fmt.Errorf("could not read file log file: %s", err)
-		panic(err)
+		return fmt.Errorf("could not read file log file: %w", err)
 	}
 
 	cursor, err := store.GetCursor()
 	if err != nil {
-		err := fmt.Errorf("could not read file log file: %s", err)
-		panic(err)
+		return fmt.Errorf("could not read file log file: %w", err)
 	}
 
 	// Sets ups notify channel so that we can gracefully shutdown
@@ -43,17 +41,15 @@ func StartSignIns(cursorFile string, limit int, startAt *time.Time, eventsAPI *a
 		}
 		res, err := eventsAPI.SignInAttemptsRequest(ctx, body)
 		if err != nil {
-			err := fmt.Errorf("SignInCursorResetRequest request failed: %w", err)
-			panic(err)
+			return fmt.Errorf("SignInCursorResetRequest request failed: %w", err)
 		}
 		err = res.PrintEvents()
 		if err != nil {
-			err := fmt.Errorf("PrintEvents failed: %w", err)
-			panic(err)
+			return fmt.Errorf("PrintEvents failed: %w", err)
 		}
 		err = store.SaveCursor(res.Cursor)
 		if err != nil {
-			panic(err)
+			return fmt.Errorf("could not save cursor: %w", err)
 		}
 		cursor = res.Cursor
 	} else {
@@ -61,19 +57,15 @@ func StartSignIns(cursorFile string, limit int, startAt *time.Time, eventsAPI *a
 	}
 
 	for {
-
 		select {
 		case <-sigCh:
 			log.Println("Interrupted, shutting down")
 			cancel()
 			err := store.CloseStore()
 			if err != nil {
-				err := fmt.Errorf("could not close store: %w", err)
-				log.Println(err)
-				os.Exit(1)
+				return fmt.Errorf("could not close store: %w", err)
 			}
-			log.Println("Gracefully shutdown")
-			os.Exit(0)
+			return nil
 		default:
 			body := api.CursorRequest{Cursor: cursor}
 			res, err := eventsAPI.SignInAttemptsRequest(ctx, body)
@@ -92,13 +84,11 @@ func StartSignIns(cursorFile string, limit int, startAt *time.Time, eventsAPI *a
 
 			err = res.PrintEvents()
 			if err != nil {
-				err := fmt.Errorf("PrintEvents failed: %w", err)
-				panic(err)
+				return fmt.Errorf("PrintEvents failed: %w", err)
 			}
 			err = store.SaveCursor(res.Cursor)
 			if err != nil {
-				err := fmt.Errorf("SaveCursor failed: %w", err)
-				panic(err)
+				return fmt.Errorf("SaveCursor failed: %w", err)
 			}
 			cursor = res.Cursor
 		}

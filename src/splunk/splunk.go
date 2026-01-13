@@ -52,8 +52,7 @@ func (e *SplunkAPI) request(ctx context.Context, method string, route string, da
 	}
 	req, err := http.NewRequestWithContext(ctx, method, e.BaseUrl+route, b)
 	if err != nil {
-		err := fmt.Errorf("could not create new request: %w", err)
-		return nil, err
+		return nil, fmt.Errorf("could not create new request: %w", err)
 	}
 	req.Header.Add("Authorization", fmt.Sprintf("Splunk %s", e.SessionKey))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -61,8 +60,7 @@ func (e *SplunkAPI) request(ctx context.Context, method string, route string, da
 
 	res, err := e.client.Do(req)
 	if err != nil {
-		err := fmt.Errorf("could not make request: %w", err)
-		return nil, err
+		return nil, fmt.Errorf("could not make request: %w", err)
 	}
 	return res, nil
 }

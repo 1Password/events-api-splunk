@@ -13,20 +13,18 @@ import (
 	"go.1password.io/eventsapi-splunk/store"
 )
 
-func StartItemUsages(cursorFile string, limit int, startAt *time.Time, eventsAPI *api.EventsAPI) {
+func StartItemUsages(cursorFile string, limit int, startAt *time.Time, eventsAPI *api.EventsAPI) error {
 	log.Println("Starting ItemUsages...")
 
 	store, err := store.OpenStore(cursorFile)
 	defer store.CloseStore()
 	if err != nil {
-		err := fmt.Errorf("could not read file log file: %s", err)
-		panic(err)
+		return fmt.Errorf("could not read file log file: %w", err)
 	}
 
 	cursor, err := store.GetCursor()
 	if err != nil {
-		err := fmt.Errorf("could not read file log file: %s", err)
-		panic(err)
+		return fmt.Errorf("could not read file log file: %w", err)
 	}
 
 	// Sets ups notify channel so that we can gracefully shutdown
@@ -43,17 +41,15 @@ func StartItemUsages(cursorFile string, limit int, startAt *time.Time, eventsAPI
 		}
 		res, err := eventsAPI.ItemUsagesRequest(ctx, body)
 		if err != nil {
-			err := fmt.Errorf("ItemUsagesRequest request failed: %w", err)
-			panic(err)
+			return fmt.Errorf("ItemUsagesRequest request failed: %w", err)
 		}
 		err = res.PrintEvents()
 		if err != nil {
-			err := fmt.Errorf("PrintEvents failed: %w", err)
-			panic(err)
+			return fmt.Errorf("PrintEvents failed: %w", err)
 		}
 		err = store.SaveCursor(res.Cursor)
 		if err != nil {
-			panic(err)
+			return fmt.Errorf("could not save cursor: %w", err)
 		}
 		cursor = res.Cursor
 	} else {
@@ -67,12 +63,9 @@ func StartItemUsages(cursorFile string, limit int, startAt *time.Time, eventsAPI
 			cancel()
 			err := store.CloseStore()
 			if err != nil {
-				err := fmt.Errorf("could not close store: %w", err)
-				log.Println(err)
-				os.Exit(1)
+				return fmt.Errorf("could not close store: %w", err)
 			}
-			log.Println("Gracefully shutdown")
-			os.Exit(0)
+			return nil
 		default:
 			body := api.CursorRequest{Cursor: cursor}
 			res, err := eventsAPI.ItemUsagesRequest(ctx, body)
@@ -91,13 +84,11 @@ func StartItemUsages(cursorFile string, limit int, startAt *time.Time, eventsAPI
 
 			err = res.PrintEvents()
 			if err != nil {
-				err := fmt.Errorf("PrintEvents failed: %w", err)
-				panic(err)
+				return fmt.Errorf("PrintEvents failed: %w", err)
 			}
 			err = store.SaveCursor(res.Cursor)
 			if err != nil {
-				err := fmt.Errorf("SaveCursor failed: %w", err)
-				panic(err)
+				return fmt.Errorf("SaveCursor failed: %w", err)
 			}
 			cursor = res.Cursor
 		}
