@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -23,9 +23,13 @@ var Version string
 var DefaultUserAgent = fmt.Sprintf("1Password Events API for Splunk / %s", Version)
 
 func NewEventsAPI(authToken string, url string) *EventsAPI {
-	log.Println("New Events API Version:", Version)
+	logger := slog.With("version", Version, "url", url)
+
+	logger.Debug("New Events API", "version", Version)
+
 	retryHTTPClient := retryablehttp.NewClient()
-	retryHTTPClient.Logger = &loggerWrapper{}
+	// explicit assertion here since this accepts interface
+	retryHTTPClient.Logger = retryablehttp.LeveledLogger(logger)
 
 	client := &EventsAPI{
 		client:    retryHTTPClient.StandardClient(),
@@ -63,11 +67,4 @@ type CursorRequest struct {
 type CursorResetRequest struct {
 	Limit     int        `json:"limit"`
 	StartTime *time.Time `json:"start_time,omitempty"`
-}
-
-type loggerWrapper struct {
-}
-
-func (l *loggerWrapper) Printf(s string, i ...interface{}) {
-	log.Printf(s, i...)
 }

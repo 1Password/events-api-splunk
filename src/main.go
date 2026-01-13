@@ -4,9 +4,10 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"path"
+	"strings"
 
 	"go.1password.io/eventsapi-splunk/actions"
 	events "go.1password.io/eventsapi-splunk/api"
@@ -20,12 +21,24 @@ var EventBuildType string // Injected at build time so we can make multiple apps
 func main() {
 	err := run()
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("unexpected error", "error", err)
+		os.Exit(1)
 	}
 }
 
 func run() error {
-	log.Println("Booting...")
+	// Set up slog logger with INFO level by default, DEBUG if LOG_LEVEL=debug
+	logLevel := slog.LevelInfo
+	if strings.ToLower(os.Getenv("LOG_LEVEL")) == "debug" {
+		logLevel = slog.LevelDebug
+	}
+	opts := &slog.HandlerOptions{
+		Level: logLevel,
+	}
+	logger := slog.New(slog.NewTextHandler(os.Stderr, opts))
+	slog.SetDefault(logger)
+
+	slog.Info("Booting...")
 	if EventBuildType == "" {
 		return fmt.Errorf("missing EventBuildType flag")
 	}
@@ -82,6 +95,8 @@ func run() error {
 	}
 
 	eventsAPI := events.NewEventsAPI(eventsToken, url)
+
+	slog.Info("Starting", "eventType", EventBuildType, "limit", splunkEnv.Config.Limit, "startAt", splunkEnv.Config.StartAt)
 
 	switch {
 	case jwt.Features.Contains(utils.SignInAttemptsFeatureScope) && EventBuildType == utils.SignInAttemptsFeatureScope:

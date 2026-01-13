@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"path"
 	"strconv"
@@ -32,7 +32,7 @@ type SplunkEnv struct {
 // Note that the toml parsing library does not support BOM characters.
 // LoadConfig must trim a BOM prefix before passing the config bytes to the parser.
 func NewSplunkEnv(splunkHome string) (*SplunkEnv, error) {
-	log.Println("New Config")
+	slog.Debug("New Config")
 
 	sc := SplunkEnv{
 		Home:       splunkHome,

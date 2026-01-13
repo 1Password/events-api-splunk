@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -22,7 +23,7 @@ type SplunkAPI struct {
 const DefaultClientTimeout = 15 * time.Second
 
 func NewSplunkAPI(sessionKey string) *SplunkAPI {
-	log.Println("New Splunk API")
+	slog.Debug("New Splunk API")
 
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},

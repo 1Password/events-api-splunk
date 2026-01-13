@@ -5,19 +5,20 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"os"
 )
 
 type Store struct {
-	file *os.File
+	file   *os.File
+	logger *slog.Logger
 }
 
 const (
 	CursorLength = 200 // this is a rough estimate
 )
 
-func rollFile(file *os.File, length int64) error {
+func rollFile(logger *slog.Logger, file *os.File, length int64) error {
 	if file == nil {
 		return fmt.Errorf("received a nil file")
 	}
@@ -40,19 +41,19 @@ func rollFile(file *os.File, length int64) error {
 
 	err = file.Truncate(0)
 	if err != nil {
-		log.Printf("Failed while truncating, eof content: %s", string(saveBytes))
-		return fmt.Errorf("failed to truncate file: %w", err)
+		logger.Debug("Failed while truncating", "content", string(saveBytes))
+		return fmt.Errorf("failed to truncate file: %w, eof content: %s", err, string(saveBytes))
 	}
 
 	_, err = file.Seek(0, 0)
 	if err != nil {
-		log.Printf("Lost file, eof content: %s", string(saveBytes))
+		logger.Debug("Lost file", "content", string(saveBytes))
 		return fmt.Errorf("failed to seek to beginning of file: %w", err)
 	}
 
 	_, err = bufReader.WriteTo(file)
 	if err != nil {
-		log.Printf("Lost file, eof content: %s", string(saveBytes))
+		logger.Debug("Lost file", "content", string(saveBytes))
 		return fmt.Errorf("failed to write to file: %w", err)
 	}
 
@@ -61,7 +62,9 @@ func rollFile(file *os.File, length int64) error {
 }
 
 func OpenStore(filePath string) (*Store, error) {
-	log.Println("Opening store")
+	logger := slog.With("filePath", filePath)
+	logger.Debug("Opening store")
+
 	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open cursor file: %w", err)
@@ -71,13 +74,14 @@ func OpenStore(filePath string) (*Store, error) {
 		return nil, fmt.Errorf("failed to get fileinfo: %w", err)
 	}
 	if stat.Size() > CursorLength*1000 {
-		err := rollFile(file, CursorLength*100)
+		err := rollFile(logger, file, CursorLength*100)
 		if err != nil {
 			return nil, fmt.Errorf("failed to roll file: %w", err)
 		}
 	}
 	return &Store{
-		file: file,
+		file:   file,
+		logger: logger,
 	}, nil
 }
 
@@ -90,7 +94,9 @@ func (s *Store) CloseStore() error {
 // depending on the operating system). If the last line of the file is the newline
 // character, it is skipped, and looks for the next instance of the newline character.
 func (s *Store) GetCursor() (string, error) {
-	log.Println("Get cursor")
+	logger := s.logger
+
+	logger.Debug("Get cursor")
 	stat, err := s.file.Stat()
 	if err != nil {
 		return "", err
@@ -126,6 +132,10 @@ func (s *Store) GetCursor() (string, error) {
 }
 
 func (s *Store) SaveCursor(cursor string) error {
+	logger := s.logger
+
+	logger.Debug("Save cursor", "cursor", cursor)
+
 	n, err := fmt.Fprintln(s.file, cursor)
 	if err != nil {
 		if n == 0 {

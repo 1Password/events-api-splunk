@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,8 +15,6 @@ import (
 )
 
 func StartItemUsages(cursorFile string, limit int, startAt *time.Time, eventsAPI *api.EventsAPI) error {
-	log.Println("Starting ItemUsages...")
-
 	store, err := store.OpenStore(cursorFile)
 	defer store.CloseStore()
 	if err != nil {
@@ -34,7 +33,7 @@ func StartItemUsages(cursorFile string, limit int, startAt *time.Time, eventsAPI
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	if cursor == "" {
-		log.Println("Performing cursor reset")
+		slog.Debug("Performing cursor reset")
 		body := api.CursorResetRequest{
 			Limit:     limit,
 			StartTime: startAt,
@@ -53,13 +52,13 @@ func StartItemUsages(cursorFile string, limit int, startAt *time.Time, eventsAPI
 		}
 		cursor = res.Cursor
 	} else {
-		log.Println("Using stored cursor")
+		slog.Debug("Using stored cursor")
 	}
 
 	for {
 		select {
 		case <-sigCh:
-			log.Println("Interrupted, shutting down")
+			slog.Info("Interrupted, shutting down")
 			cancel()
 			err := store.CloseStore()
 			if err != nil {
