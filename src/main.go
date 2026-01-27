@@ -7,7 +7,6 @@ import (
 	"log/slog"
 	"os"
 	"path"
-	"strings"
 
 	"go.1password.io/eventsapi-splunk/actions"
 	events "go.1password.io/eventsapi-splunk/api"
@@ -27,16 +26,7 @@ func main() {
 }
 
 func run() error {
-	// Set up slog logger with INFO level by default, DEBUG if LOG_LEVEL=debug
-	logLevel := slog.LevelInfo
-	if strings.ToLower(os.Getenv("LOG_LEVEL")) == "debug" {
-		logLevel = slog.LevelDebug
-	}
-	opts := &slog.HandlerOptions{
-		Level: logLevel,
-	}
-	logger := slog.New(slog.NewTextHandler(os.Stderr, opts))
-	slog.SetDefault(logger)
+	setupLogging()
 
 	slog.Info("Booting...")
 	if EventBuildType == "" {
