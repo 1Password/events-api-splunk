@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
-	"log"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -43,7 +42,7 @@ func NewSplunkAPI(sessionKey string) *SplunkAPI {
 }
 
 func (e *SplunkAPI) request(ctx context.Context, method string, route string, data url.Values) (*http.Response, error) {
-	log.Printf("Calling Splunk API: %s", route)
+	slog.Debug("Calling Splunk API", "route", route)
 
 	var b io.Reader
 	contentLength := 0

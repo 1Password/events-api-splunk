@@ -3,7 +3,6 @@ package actions
 import (
 	"context"
 	"fmt"
-	"log"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -69,7 +68,7 @@ func StartAuditEvents(cursorFile string, limit int, startAt *time.Time, eventsAP
 			body := api.CursorRequest{Cursor: cursor}
 			res, err := eventsAPI.AuditEventsRequest(ctx, body)
 			if err != nil {
-				log.Printf("AuditEventsRequest request failed: %s\n", err)
+				slog.Error("AuditEventsRequest request failed", "error", err)
 				time.Sleep(30 * time.Second)
 				continue
 			}

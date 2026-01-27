@@ -28,7 +28,7 @@ func main() {
 func run() error {
 	setupLogging()
 
-	slog.Info("Booting...")
+	slog.Debug("Booting...")
 	if EventBuildType == "" {
 		return fmt.Errorf("missing EventBuildType flag")
 	}

@@ -3,7 +3,6 @@ package actions
 import (
 	"context"
 	"fmt"
-	"log"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -69,7 +68,7 @@ func StartItemUsages(cursorFile string, limit int, startAt *time.Time, eventsAPI
 			body := api.CursorRequest{Cursor: cursor}
 			res, err := eventsAPI.ItemUsagesRequest(ctx, body)
 			if err != nil {
-				log.Printf("ItemUsagesRequest request failed: %s\n", err)
+				slog.Error("ItemUsagesRequest request failed", "error", err)
 				time.Sleep(30 * time.Second)
 				continue
 			}

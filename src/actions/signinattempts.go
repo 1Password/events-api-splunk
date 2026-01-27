@@ -3,7 +3,6 @@ package actions
 import (
 	"context"
 	"fmt"
-	"log"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -69,7 +68,7 @@ func StartSignIns(cursorFile string, limit int, startAt *time.Time, eventsAPI *a
 			body := api.CursorRequest{Cursor: cursor}
 			res, err := eventsAPI.SignInAttemptsRequest(ctx, body)
 			if err != nil {
-				log.Printf("SignInCursorRequest request failed: %s\n", err)
+				slog.Error("SignInCursorRequest request failed", "error", err)
 				time.Sleep(30 * time.Second)
 				continue
 			}
