@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log/slog"
 	"os"
 	"path"
 	"strconv"
@@ -32,8 +31,6 @@ type SplunkEnv struct {
 // Note that the toml parsing library does not support BOM characters.
 // LoadConfig must trim a BOM prefix before passing the config bytes to the parser.
 func NewSplunkEnv(splunkHome string) (*SplunkEnv, error) {
-	slog.Debug("New Config")
-
 	sc := SplunkEnv{
 		Home:       splunkHome,
 		ConfigPath: path.Join(splunkHome, "/etc/apps/onepassword_events_api/local/events_reporting.conf"),

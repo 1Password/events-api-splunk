@@ -22,8 +22,6 @@ type SplunkAPI struct {
 const DefaultClientTimeout = 15 * time.Second
 
 func NewSplunkAPI(sessionKey string) *SplunkAPI {
-	slog.Debug("New Splunk API")
-
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
@@ -42,7 +40,7 @@ func NewSplunkAPI(sessionKey string) *SplunkAPI {
 }
 
 func (e *SplunkAPI) request(ctx context.Context, method string, route string, data url.Values) (*http.Response, error) {
-	slog.Debug("Calling Splunk API", "route", route)
+	slog.Info("Calling Splunk API", "route", route)
 
 	var b io.Reader
 	contentLength := 0

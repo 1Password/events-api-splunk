@@ -28,7 +28,6 @@ func main() {
 func run() error {
 	setupLogging()
 
-	slog.Debug("Booting...")
 	if EventBuildType == "" {
 		return fmt.Errorf("missing EventBuildType flag")
 	}
@@ -50,6 +49,8 @@ func run() error {
 	}
 
 	splunkAPI := splunk.NewSplunkAPI(string(splunkSession))
+
+	slog.Info("Booting", "buildType", EventBuildType, "splunkHome", os.Getenv("SPLUNK_HOME"))
 
 	// Versions less than 1.5.0 of the Events API stored the token on disk
 	// If we find it, move it to the splunk storage/passwords service

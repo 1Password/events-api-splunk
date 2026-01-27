@@ -32,7 +32,7 @@ func StartAuditEvents(cursorFile string, limit int, startAt *time.Time, eventsAP
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	if cursor == "" {
-		slog.Debug("Performing cursor reset")
+		slog.Info("Performing cursor reset")
 		body := api.CursorResetRequest{
 			Limit:     limit,
 			StartTime: startAt,
@@ -51,7 +51,7 @@ func StartAuditEvents(cursorFile string, limit int, startAt *time.Time, eventsAP
 		}
 		cursor = res.Cursor
 	} else {
-		slog.Debug("Using stored cursor")
+		slog.Info("Using stored cursor")
 	}
 
 	for {
