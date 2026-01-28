@@ -73,6 +73,11 @@ func run() error {
 		}
 	}
 
+	if eventsToken == "" {
+		slog.Info("no events token found, exiting")
+		return nil
+	}
+
 	jwt, err := utils.ParseJWTClaims(eventsToken)
 	if err != nil {
 		return fmt.Errorf("could not parse jwt: %w", err)
