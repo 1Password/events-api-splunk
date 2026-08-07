@@ -1,0 +1,38 @@
+## Application-level permissions
+#
+# This file sets the default ownership, access controls, and sharing scope for
+# the knowledge objects shipped in this app. Do not edit it to change
+# permissions on a running instance -- Splunk writes user changes made through
+# Splunk Web to metadata/local.meta, which takes precedence over this file.
+
+[]
+access = read : [ * ], write : [ admin, sc_admin ]
+export = none
+
+## Sourcetype definitions and field extractions for the 1Password event
+## sourcetypes are shared globally so that other apps (for example Splunk
+## Enterprise Security) can search and normalize the ingested events.
+[props]
+access = read : [ * ], write : [ admin, sc_admin ]
+export = system
+
+## Scripted inputs poll the 1Password Events Reporting API and are enabled
+## through the app's setup page, so only administrators may modify them.
+[inputs]
+access = read : [ admin, sc_admin ], write : [ admin, sc_admin ]
+export = none
+
+## Dashboards and navigation are readable by all users of this app.
+[views]
+access = read : [ * ], write : [ admin, sc_admin ]
+export = none
+
+[nav]
+access = read : [ * ], write : [ admin, sc_admin ]
+export = none
+
+## The setup page writes credentials to the app's storage/passwords endpoint
+## and must only be reachable by administrators.
+[views/setup_page_dashboard]
+access = read : [ admin, sc_admin ], write : [ admin, sc_admin ]
+export = none
