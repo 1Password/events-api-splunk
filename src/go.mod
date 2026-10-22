@@ -1,6 +1,6 @@
 module go.1password.io/eventsapi-splunk
 
-go 1.24.11
+go 1.26.10
 
 require (
 	github.com/BurntSushi/toml v0.3.1
